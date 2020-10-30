@@ -7,7 +7,7 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "less",
+          "style": "scss",
           "skipTests": true
         },
         "@schematics/angular:class": {
@@ -47,7 +47,12 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
             ],
             "styles": [
               "src/styles.less"
@@ -145,6 +150,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "ngClient"
+    }
+  },
+  "defaultProject": "ngClient",
+  "cli": {
+    "analytics": "70e63dfe-3844-43ab-bec6-a21e95352d5d"
+  }
 }

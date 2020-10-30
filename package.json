@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "@abp/ng.core": "^3.2.1",
     "@angular/animations": "~10.1.6",
     "@angular/common": "~10.1.6",
     "@angular/compiler": "~10.1.6",
@@ -19,6 +20,9 @@
     "@angular/platform-browser": "~10.1.6",
     "@angular/platform-browser-dynamic": "~10.1.6",
     "@angular/router": "~10.1.6",
+    "@ngx-validate/core": "^0.0.12",
+    "@ngxs/logger-plugin": "^3.7.0",
+    "ng-zorro-antd": "^10.0.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
@@ -27,9 +31,9 @@
     "@angular-devkit/build-angular": "~0.1001.7",
     "@angular/cli": "~10.1.7",
     "@angular/compiler-cli": "~10.1.6",
-    "@types/node": "^12.11.1",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
@@ -42,5 +46,8 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.0.2"
-  }
+  },
+  "main": "index.js",
+  "author": "pangjianxin <343516704@qq.com>",
+  "license": "MIT"
 }
