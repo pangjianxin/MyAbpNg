@@ -6,7 +6,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { IconsProviderModule } from 'src/app/icons-provider.module';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -43,65 +42,67 @@ import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { ErrorHandler } from './handlers/error-handler';
-import { CoreModule, noop } from '@abp/ng.core';
 import { RootParams } from './models/common';
 import { THEME_SHARED_ROUTE_PROVIDERS } from './providers/route.provider';
 import {
   httpErrorConfigFactory,
   HTTP_ERROR_CONFIG,
 } from './tokens/http-error.token';
-import { NgxValidateCoreModule } from '@ngx-validate/core';
+import { TableBaseComponent } from './components/table-base/table-base.component';
+import { CoreModule } from '@abp/ng.core';
+import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+const SHARED_MODULE = [
+  CommonModule,
+  FormsModule,
+  ReactiveFormsModule,
+  IconsProviderModule,
+  NzButtonModule,
+  NzLayoutModule,
+  NzMenuModule,
+  NzGridModule,
+  NzFormModule,
+  NzInputModule,
+  NzPageHeaderModule,
+  NzAvatarModule,
+  NzMessageModule,
+  NzBreadCrumbModule,
+  NzDropDownModule,
+  NzModalModule,
+  NzDescriptionsModule,
+  NzTableModule,
+  NzDividerModule,
+  NzSelectModule,
+  NzTagModule,
+  NzSpaceModule,
+  NzPopconfirmModule,
+  NzAutocompleteModule,
+  NzDatePickerModule,
+  NzToolTipModule,
+  NzBadgeModule,
+  NzTabsModule,
+  NzResultModule,
+  NzInputNumberModule,
+  NzUploadModule,
+  NzCardModule,
+  NzStatisticModule,
+  NzEmptyModule,
+  NzPopoverModule,
+  NzStepsModule,
+  NzListModule,
+  NzRadioModule,
+  NzCheckboxModule,
+];
+
 @NgModule({
-  declarations: [],
-  imports: [CommonModule, NzModalModule, CoreModule],
-  exports: [
-    CommonModule,
-    FormsModule,
-    NgxValidateCoreModule,
-    ReactiveFormsModule,
-    IconsProviderModule,
-    NzButtonModule,
-    NzLayoutModule,
-    NzMenuModule,
-    NzGridModule,
-    NzFormModule,
-    NzInputModule,
-    NzPageHeaderModule,
-    NzAvatarModule,
-    NzMessageModule,
-    NzBreadCrumbModule,
-    NzDropDownModule,
-    NzModalModule,
-    NzDescriptionsModule,
-    NzTableModule,
-    NzDividerModule,
-    NzSelectModule,
-    NzTagModule,
-    NzSpaceModule,
-    NzPopconfirmModule,
-    NzAutocompleteModule,
-    NzDatePickerModule,
-    NzToolTipModule,
-    NzBadgeModule,
-    NzTabsModule,
-    NzResultModule,
-    NzInputNumberModule,
-    NzUploadModule,
-    NzCardModule,
-    NzStatisticModule,
-    NzEmptyModule,
-    NzPopoverModule,
-    NzStepsModule,
-    NzListModule,
-    NzRadioModule,
+  declarations: [TableBaseComponent],
+  imports: [SHARED_MODULE, CoreModule],
+  exports: [SHARED_MODULE
   ],
 })
 export class ThemeSharedModule {
   constructor(private errorHandler: ErrorHandler) { }
 
-  static forRoot(
-    options = {} as RootParams
-  ): ModuleWithProviders<ThemeSharedModule> {
+  static forRoot(options = {} as RootParams): ModuleWithProviders<ThemeSharedModule> {
     return {
       ngModule: ThemeSharedModule,
       providers: [

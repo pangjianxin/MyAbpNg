@@ -1,0 +1,127 @@
+<nz-page-header class="site-page-header">
+    <!--breadcrumb-->
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>主页</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a>用户</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>编辑</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <!--avatar-->
+    <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
+    <!--title-->
+    <nz-page-header-title>编辑信息</nz-page-header-title>
+    <!--subtitle-->
+    <nz-page-header-subtitle>该页面修改所有用户信息</nz-page-header-subtitle>
+    <!--tags-->
+    <nz-page-header-tags>
+        <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
+    </nz-page-header-tags>
+    <!--extra-->
+    <nz-page-header-extra>
+    </nz-page-header-extra>
+    <nz-page-header-content>
+
+    </nz-page-header-content>
+</nz-page-header>
+
+<form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="submit()">
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="user"></i>
+            {{ 'AbpIdentity::DisplayName:UserName' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" [nzErrorTip]="userInfoErrorTpl">
+            <input type="text" formControlName="userName" nz-input
+                [placeholder]="'AbpIdentity::DisplayName:UserName' | abpLocalization">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="user"></i>
+            {{ 'AbpIdentity::DisplayName:Name' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+            <input type="text" formControlName="name" nz-input
+                [placeholder]="'AbpIdentity::DisplayName:Name' | abpLocalization">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="user"></i>
+            {{ 'AbpIdentity::DisplayName:Surname' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+            <input type="text" formControlName="surname" nz-input
+                [placeholder]="'AbpIdentity::DisplayName:Surname' | abpLocalization">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="mail"></i>
+            {{ 'AbpIdentity::DisplayName:Email' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+            <input type="text" formControlName="email" nz-input
+                [placeholder]="'AbpIdentity::DisplayName:Email' | abpLocalization">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="mobile"></i>
+            {{ 'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+            <input type="text" formControlName="phoneNumber" nz-input
+                [placeholder]="'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="lock"></i>
+            {{ 'AbpIdentity::DisplayName:Password' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+            <input type="text" formControlName="password" nz-input
+                [placeholder]="'AbpIdentity::DisplayName:Password' | abpLocalization">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="lock"></i>
+            {{'AbpIdentity::Roles' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+            <nz-select [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
+                nzPlaceHolder="请选择角色" formControlName="roleNames">
+                <nz-option *ngFor="let item of assignableRoles" [nzLabel]="item.name" [nzValue]="item.name">
+                </nz-option>
+            </nz-select>
+            <ng-template #tagPlaceHolder let-selectedList> and {{ selectedList.length }} more selected </ng-template>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-control [nzOffset]="5" [nzSpan]="12">
+            <button nz-button nzType="primary" [nzLoading]="inProgress"
+                [disabled]="!form.valid">{{ 'AbpIdentity::Save' | abpLocalization }}
+            </button>
+        </nz-form-control>
+    </nz-form-item>
+
+</form>
+<ng-template #userInfoErrorTpl let-control>
+    <ng-container *ngIf="control.hasError('required')">
+        <p> <i nz-icon nzType="warning"></i>该项必输</p>
+    </ng-container>
+    <ng-container *ngIf="control.hasError('maxlength')">
+        <p> <i nz-icon nzType="warning"></i>
+            该项允许的最大长度为{{control.errors.maxlength.requiredLength}},
+            实际长度为{{control.errors.maxlength.actualLength}}
+        </p>
+    </ng-container>
+    <ng-container *ngIf="control.hasError('email')">
+        <p> <i nz-icon nzType="warning"></i>
+            邮箱格式不正确
+        </p>
+    </ng-container>
+</ng-template>

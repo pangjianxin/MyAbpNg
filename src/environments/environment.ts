@@ -1,8 +1,9 @@
 import { Config } from '@abp/ng.core';
 
+
 const baseUrl = 'http://localhost:4201';
 
-export const environment = {
+export const environment: Config.Environment = {
   production: false,
   application: {
     baseUrl,

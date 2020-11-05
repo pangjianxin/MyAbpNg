@@ -1,0 +1,68 @@
+<nz-page-header class="site-page-header">
+    <!--breadcrumb-->
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>主页</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a>用户</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>维护用户信息</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <!--avatar-->
+    <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
+    <!--title-->
+    <nz-page-header-title>维护用户信息</nz-page-header-title>
+    <!--subtitle-->
+    <nz-page-header-subtitle>你可以修改密码或维护你的个人信息</nz-page-header-subtitle>
+    <!--tags-->
+    <nz-page-header-tags>
+        <nz-tag [nzColor]="'blue'">无权限限制</nz-tag>
+    </nz-page-header-tags>
+    <!--extra-->
+    <nz-page-header-extra>
+    </nz-page-header-extra>
+    <nz-page-header-content>
+
+    </nz-page-header-content>
+</nz-page-header>
+<nz-divider [nzText]="text" nzOrientation="left">
+    <ng-template #text><i nz-icon nzType="form"></i> 表单项</ng-template>
+</nz-divider>
+<div nz-row nzGutter="24">
+    <div nz-col nzFlex>
+        <ul nz-menu nzMode="inline" nzTheme="light" [nzInlineCollapsed]="isCollapsed">
+            <li *ngIf="!hideChangePasswordTab && isProfileLoaded" nz-menu-item nz-tooltip nzTooltipPlacement="right"
+                [nzTooltipTitle]="isCollapsed ? 'Navigation One' : ''" (click)="selectedTab = 0">
+                <i nz-icon nzType="lock"></i>
+                <span>{{ 'AbpUi::ChangePassword' | abpLocalization }}</span>
+            </li>
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right"
+                [nzTooltipTitle]="isCollapsed ? 'Navigation One' : ''" (click)="selectedTab = 1">
+                <i nz-icon nzType="user"></i>
+                <span>{{ 'AbpAccount::PersonalSettings' | abpLocalization }}</span>
+            </li>
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right" [nzTooltipTitle]="isCollapsed ? '展开菜单栏' : '收起菜单栏'"
+                (click)="toggleCollapsed()">
+                <i nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+                <span>收起/展开菜单栏</span>
+            </li>
+        </ul>
+    </div>
+    <div nz-col nzFlex="1 1 auto">
+        <nz-tabset nzSize="large" nzType="card" nzTabPosition="right">
+            <nz-tab [nzTitle]="modPasswordTitleTpl" *ngIf="selectedTab === 0">
+                <app-change-password-form></app-change-password-form>
+            </nz-tab>
+            <ng-template #modPasswordTitleTpl>
+                <i nz-icon nzType="lock"></i>
+                {{ 'AbpUi::ChangePassword' | abpLocalization }}
+            </ng-template>
+            <nz-tab [nzTitle]="psnlSettingTitleTpl" *ngIf="selectedTab === 1">
+                <app-personal-settings-form></app-personal-settings-form>
+            </nz-tab>
+            <ng-template #psnlSettingTitleTpl>
+                <i nz-icon nzType="setting"></i>
+                {{ 'AbpAccount::PersonalSettings' | abpLocalization }}
+            </ng-template>
+        </nz-tabset>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+<nz-layout class="app-layout">
+
+    <!-- <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md">
+        <div class="sidebar-logo">
+            <a href="https://ng.ant.design/" target="_blank">
+                <img src="assets/imgs/logo.svg" alt="logo">
+                <h1>租赁贷款客户管理系统</h1>
+            </a>
+        </div>
+        <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+            <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: appMenus }"></ng-container>
+            <ng-template #menuTpl let-appMenus>
+                <ng-container *ngFor="let menu of appMenus">
+                    <li *ngIf="!menu.children" nz-menu-item [nzPaddingLeft]="menu.level*24" [nzDisabled]="menu.disabled"
+                        [nzSelected]="menu.selected" [routerLink]="menu.url">
+                        <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+                        <span>{{ menu.title }}</span>
+                    </li>
+                    <li *ngIf="menu.children" nz-submenu [nzPaddingLeft]="menu.level*24" [nzOpen]="menu.open"
+                        [nzTitle]="menu.title" [nzIcon]="menu.icon" [nzDisabled]="menu.disabled">
+                        <ul>
+                            <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menu.children }">
+                            </ng-container>
+                        </ul>
+                    </li>
+                </ng-container>
+            </ng-template>
+        </ul>
+    </nz-sider> -->
+    <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md">
+        <div class="sidebar-logo">
+            <a href="https://ng.ant.design/" target="_blank">
+                <img src="assets/imgs/logo.svg" alt="logo">
+                <h1>租赁贷款客户管理系统</h1>
+            </a>
+        </div>
+        <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+            <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: appRoutes$ | async }"></ng-container>
+            <ng-template #menuTpl let-routes>
+                <ng-container *ngFor="let menu of routes">
+                    <!-- 叶子节点 -->
+                    <li *ngIf="menu.isLeaf" nz-menu-item [nzDisabled]="menu.invisible" [routerLink]="menu.path">
+                        <i nz-icon [nzType]="menu.iconClass" *ngIf="menu.iconClass"></i>
+                        <span>{{ menu.name | abpLocalization }}</span>
+                    </li>
+                    <!-- 父节点 -->
+                    <li *ngIf="!menu.isLeaf" nz-submenu [nzTitle]="menu.name | abpLocalization"
+                        [nzIcon]="menu.iconClass" [nzDisabled]="menu.invisible">
+                        <ul>
+                            <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menu.children }">
+                            </ng-container>
+                        </ul>
+                    </li>
+                </ng-container>
+            </ng-template>
+        </ul>
+    </nz-sider>
+    <nz-layout>
+        <nz-header>
+            <app-header></app-header>
+        </nz-header>
+        <nz-content>
+            <div class="inner-content">
+                <router-outlet></router-outlet>
+            </div>
+        </nz-content>
+        <nz-footer>中国银行内蒙古包头分行信息科技部@庞建新</nz-footer>
+    </nz-layout>
+</nz-layout>

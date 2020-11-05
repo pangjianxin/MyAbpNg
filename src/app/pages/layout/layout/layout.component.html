@@ -1,0 +1,20 @@
+<nz-layout class="app-layout">
+    <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md" [nzCollapsed]="isCollapsed">
+        <div class="sidebar-logo">
+            <a href="https://ng.ant.design/" target="_blank">
+                <img src="assets/imgs/logo.svg" alt="logo">
+                <h1>租赁贷款客户管理系统</h1>
+            </a>
+        </div>
+    </nz-sider>
+    <nz-layout>
+        <nz-header>
+            <app-header></app-header>
+        </nz-header>
+        <nz-content>
+            <div class="inner-content">
+                <router-outlet></router-outlet>
+            </div>
+        </nz-content>
+    </nz-layout>
+</nz-layout>

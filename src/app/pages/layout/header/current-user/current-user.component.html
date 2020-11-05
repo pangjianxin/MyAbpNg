@@ -1,0 +1,23 @@
+<ng-template #isNotAuthenticatedTpl>
+    <a (click)="login()">
+        <i nz-icon nzType="login"></i>
+        {{ 'AbpAccount::Login' | abpLocalization}}
+    </a>
+</ng-template>
+<ng-container *ngIf="isAuthenticated;else isNotAuthenticatedTpl">
+    <a nz-dropdown [nzDropdownMenu]="manageProfileMenu">
+        <i nz-icon nzType="setting"></i> {{ (currentUser$ | async)?.userName }}
+    </a>
+    <nz-dropdown-menu #manageProfileMenu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+            <li nz-menu-item [routerLink]="[ '/main/account/manage-profile' ]">
+                <i nz-icon nzType="info-circle"></i>
+                {{ 'AbpAccount::ManageYourProfile' | abpLocalization }}
+            </li>
+            <li nz-menu-item (click)="logout()">
+                <i nz-icon nzType="logout"></i>
+                {{ 'AbpUi::Logout' | abpLocalization }}
+            </li>
+        </ul>
+    </nz-dropdown-menu>
+</ng-container>

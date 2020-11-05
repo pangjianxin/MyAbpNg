@@ -1,5 +1,5 @@
-import { RoutesService, eLayoutType } from '@abp/ng.core';
 import { APP_INITIALIZER } from '@angular/core';
+import { eLayoutType, RoutesService } from '@abp/ng.core';
 
 export const APP_ROUTE_PROVIDER = [
   {
@@ -10,13 +10,13 @@ export const APP_ROUTE_PROVIDER = [
   },
 ];
 
-function configureRoutes(routes: RoutesService) {
+function configureRoutes(routes: RoutesService): () => void {
   return () => {
     routes.add([
       {
-        path: '/',
+        path: '/main',
         name: '::Menu:Home',
-        iconClass: 'fas fa-home',
+        iconClass: 'home',
         order: 1,
         layout: eLayoutType.application,
       },

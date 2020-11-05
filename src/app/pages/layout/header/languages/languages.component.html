@@ -1,0 +1,11 @@
+<a nz-dropdown [nzDropdownMenu]="languagesMenu">
+    <i nz-icon nzType="translation"></i>{{ defaultLanguage$ | async }}
+</a>
+<nz-dropdown-menu #languagesMenu="nzDropdownMenu">
+    <ul nz-menu nzSelectable *ngIf="(dropdownLanguages$ | async)?.length > 0">
+        <li nz-menu-item *ngFor="let lang of dropdownLanguages$ | async" (click)="onChangeLang(lang.cultureName)">
+            <i nz-icon nzType="info-circle"></i>
+            {{ lang?.displayName }}
+        </li>
+    </ul>
+</nz-dropdown-menu>

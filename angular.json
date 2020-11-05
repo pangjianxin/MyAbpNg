@@ -39,6 +39,9 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies":[
+              "@ant-design/colors"
+            ],
             "outputPath": "dist/ngClient",
             "index": "src/index.html",
             "main": "src/main.ts",

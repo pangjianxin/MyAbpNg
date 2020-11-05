@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Config, LocalizationService } from '@abp/ng.core';
 import snq from 'snq';
 import { NzMessageDataOptions, NzMessageRef, NzMessageService } from 'ng-zorro-antd/message';
+import { LocalizationService, Config } from '@abp/ng.core';
 export enum messageSeverity {
-    info,
-    success,
-    error,
-    warning
+    info = 'info',
+    success = 'success',
+    error = 'error',
+    warning = 'warning'
 }
 @Injectable({
     providedIn: 'root',
@@ -79,7 +79,7 @@ export class MessageService {
         options = {} as NzMessageDataOptions,
     ): NzMessageRef {
         const messageD = this.localizer.instant(message);
-        return this.message.create(severity.toString(), messageD, options)
+        return this.message.create(severity.toString(), messageD, options);
     }
 }
 

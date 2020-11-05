@@ -1,4 +1,3 @@
-import { AuthService, Config, RestOccurError } from '@abp/ng.core';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ComponentRef,
@@ -10,6 +9,7 @@ import { Actions, ofActionSuccessful, Store } from '@ngxs/store';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { filter, map } from 'rxjs/operators';
 import snq from 'snq';
+import { AuthService, RestOccurError, Config } from '@abp/ng.core';
 import { ErrorScreenErrorCodes, HttpErrorConfig } from '../models/common';
 
 export const DEFAULT_ERROR_MESSAGES = {
@@ -100,7 +100,6 @@ export class ErrorHandler {
         filter(this.filterRestErrors),
       )
       .subscribe(err => {
-
         const body = snq(() => err.error.error, {
           key: DEFAULT_ERROR_LOCALIZATIONS.defaultError.title,
           defaultValue: DEFAULT_ERROR_MESSAGES.defaultError.title,

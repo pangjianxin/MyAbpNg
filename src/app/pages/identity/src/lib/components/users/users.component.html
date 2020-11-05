@@ -1,0 +1,110 @@
+<nz-page-header class="site-page-header">
+    <!--breadcrumb-->
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>主页</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a>用户</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>列表</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <!--avatar-->
+    <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
+    <!--title-->
+    <nz-page-header-title>用户列表</nz-page-header-title>
+    <!--subtitle-->
+    <nz-page-header-subtitle>显示当前系统存储所有用户</nz-page-header-subtitle>
+    <!--tags-->
+    <nz-page-header-tags>
+        <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
+    </nz-page-header-tags>
+    <!--extra-->
+    <nz-page-header-extra>
+    </nz-page-header-extra>
+    <nz-page-header-content>
+
+    </nz-page-header-content>
+</nz-page-header>
+<nz-table #nzTable [nzData]="grid" nzFixed nzShowSizeChanger nzFrontPagination="false" [nzLoading]="loading"
+    [nzTotal]="total" [(nzPageSize)]="pageSize" [(nzPageIndex)]="pageIndex"
+    (nzQueryParams)="onQueryParamsChange($event)" [nzPageSizeOptions]="[5,10,15,20]" nzShowQuickJumper
+    [nzTitle]="tableTitleTpl" [nzFooter]="tableFooterTpl">
+    <thead>
+        <tr>
+            <th [nzSelections]="listOfSelection" [(nzChecked)]="checked" [nzIndeterminate]="indeterminate"
+                (nzCheckedChange)="onAllChecked($event)"></th>
+            <th nzColumnKey="userName" nzShowSort nzSortFn="true" nzCustomFilter>
+                {{'AbpIdentity::UserName' | abpLocalization}}
+                <nz-filter-trigger [(nzVisible)]="searchMenuVisible" [nzActive]="searchValue.length > 0"
+                    [nzDropdownMenu]="identifierSearchMenu">
+                    <i nz-icon nzType="search"></i>
+                </nz-filter-trigger>
+                <nz-dropdown-menu #identifierSearchMenu="nzDropdownMenu">
+                    <div class="ant-table-filter-dropdown">
+                        <div class="search-box">
+                            <input type="text" nz-input placeholder="工号模糊搜索..." [(ngModel)]="searchValue" />
+                            <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
+                                搜索
+                            </button>
+                        </div>
+                    </div>
+                </nz-dropdown-menu>
+            </th>
+            <th nzColumnKey="name" nzCustomFilter>
+                {{ 'AbpIdentity::DisplayName:Name' | abpLocalization }}
+            </th>
+            <th nzColumnKey="surname" nzCustomFilter>
+                {{ 'AbpIdentity::DisplayName:Surname' | abpLocalization }}
+            </th>
+            <th nzColumnKey="phoneNumber" nzCustomFilter>
+                {{ 'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization }}
+            </th>
+            <th nzColumnKey="email" nzWidth="200px">{{'AbpIdentity::EmailAddress' | abpLocalization}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of nzTable.data">
+            <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
+            </td>
+            <td>{{ data.userName }}</td>
+            <td>{{ data.name }}</td>
+            <td>{{ data.surname }}</td>
+            <td>{{ data.phoneNumber }}</td>
+            <td>{{ data.email }}</td>
+        </tr>
+    </tbody>
+</nz-table>
+<ng-template #tableTitleTpl>
+    <nz-space nzDirection="horizontal">
+        <nz-space-item>
+            <button nz-button nzType="primary" (click)="openModiUserInfoDialog()">
+                <i nz-icon nzType="edit"></i>
+                编辑
+            </button>
+        </nz-space-item>
+        <nz-space-item>
+            <button nz-button nz-col nzType="default" (click)="openRegisterUserDialog()">
+                <i nz-icon nzType="user-add"></i>
+                新建
+            </button>
+        </nz-space-item>
+        <nz-space-item>
+            <button nz-button nz-col nzType="delete" nz-popconfirm
+                [nzPopconfirmTitle]="'AbpIdentity::UserDeletionConfirmationMessage' | abpLocalization"
+                (nzOnConfirm)="deleteUser()" (nzOnCancel)="cancel()">
+                <i nz-icon nzType="info-circle"></i>
+                删除
+            </button>
+        </nz-space-item>
+        <nz-space-item>
+            <button nz-button nz-col nzType="danger" nzGhost>
+                <i nz-icon nzType="setting"></i>
+                权限
+            </button>
+        </nz-space-item>
+    </nz-space>
+</ng-template>
+<ng-template #tableFooterTpl>
+    <nz-tag [nzColor]="'magenta'">总数<i nz-icon nzType="number"></i>{{total}}</nz-tag>
+    <nz-tag [nzColor]="'magenta'">当前页<i nz-icon nzType="number"></i>{{pageIndex}}</nz-tag>
+    <nz-tag [nzColor]="'magenta'">每页<i nz-icon nzType="number"></i>{{pageSize}}</nz-tag>
+</ng-template>
