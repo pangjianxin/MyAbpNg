@@ -24,14 +24,12 @@
 
     </nz-page-header-content>
 </nz-page-header>
-<nz-table #nzTable [nzData]="grid" nzFixed nzShowSizeChanger nzFrontPagination="false" [nzLoading]="loading"
-    [nzTotal]="total" [(nzPageSize)]="pageSize" [(nzPageIndex)]="pageIndex"
-    (nzQueryParams)="onQueryParamsChange($event)" [nzPageSizeOptions]="[5,10,15,20]" nzShowQuickJumper
-    [nzTitle]="tableTitleTpl" [nzFooter]="tableFooterTpl">
+<nz-table #nzTable [nzData]="data$ | async" nzFixed nzShowSizeChanger nzFrontPagination="false" [nzLoading]="loading"
+    [nzTotal]="totalCount$ | async" (nzQueryParams)="onQueryParamsChange($event)" [nzPageSizeOptions]="[5,10,15,20]"
+    nzShowQuickJumper [nzTitle]="tableTitleTpl" [nzFooter]="tableFooterTpl" [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize">
     <thead>
         <tr>
-            <th [nzSelections]="listOfSelection" [(nzChecked)]="checked" [nzIndeterminate]="indeterminate"
-                (nzCheckedChange)="onAllChecked($event)"></th>
             <th nzColumnKey="userName" nzShowSort nzSortFn="true" nzCustomFilter>
                 {{'AbpIdentity::UserName' | abpLocalization}}
                 <nz-filter-trigger [(nzVisible)]="searchMenuVisible" [nzActive]="searchValue.length > 0"
@@ -59,52 +57,61 @@
                 {{ 'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization }}
             </th>
             <th nzColumnKey="email" nzWidth="200px">{{'AbpIdentity::EmailAddress' | abpLocalization}}</th>
+            <th>{{'AbpIdentity::Actions' | abpLocalization}}</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let data of nzTable.data">
-            <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)">
-            </td>
             <td>{{ data.userName }}</td>
             <td>{{ data.name }}</td>
             <td>{{ data.surname }}</td>
             <td>{{ data.phoneNumber }}</td>
             <td>{{ data.email }}</td>
+            <td>
+                <nz-space nzDirection="horizontal">
+                    <nz-space-item>
+                        <button nz-button nzType="primary" (click)="openModiUserInfoDialog(data.id)">
+                            <i nz-icon nzType="edit"></i>
+                            编辑
+                        </button>
+                    </nz-space-item>
+                    <nz-space-item>
+                        <button nz-button nz-col nzType="delete" nz-popconfirm
+                            [nzPopconfirmTitle]="'AbpIdentity::UserDeletionConfirmationMessage' | abpLocalization"
+                            (nzOnConfirm)="deleteUser(data)" (nzOnCancel)="cancel()">
+                            <i nz-icon nzType="delete"></i>
+                            删除
+                        </button>
+                    </nz-space-item>
+                    <nz-space-item>
+                        <button nz-button nz-col nzType="danger" nzGhost>
+                            <i nz-icon nzType="setting"></i>
+                            权限
+                        </button>
+                    </nz-space-item>
+                </nz-space>
+            </td>
         </tr>
     </tbody>
 </nz-table>
 <ng-template #tableTitleTpl>
     <nz-space nzDirection="horizontal">
         <nz-space-item>
-            <button nz-button nzType="primary" (click)="openModiUserInfoDialog()">
-                <i nz-icon nzType="edit"></i>
-                编辑
+            <button nz-button nzType="primary" (click)="refresh()">
+                <i nz-icon [nzType]="'sync'" [nzSpin]="true"></i>
+                刷新
             </button>
         </nz-space-item>
         <nz-space-item>
-            <button nz-button nz-col nzType="default" (click)="openRegisterUserDialog()">
+            <button nz-button nzType="danger" (click)="openRegisterUserDialog()">
                 <i nz-icon nzType="user-add"></i>
                 新建
-            </button>
-        </nz-space-item>
-        <nz-space-item>
-            <button nz-button nz-col nzType="delete" nz-popconfirm
-                [nzPopconfirmTitle]="'AbpIdentity::UserDeletionConfirmationMessage' | abpLocalization"
-                (nzOnConfirm)="deleteUser()" (nzOnCancel)="cancel()">
-                <i nz-icon nzType="info-circle"></i>
-                删除
-            </button>
-        </nz-space-item>
-        <nz-space-item>
-            <button nz-button nz-col nzType="danger" nzGhost>
-                <i nz-icon nzType="setting"></i>
-                权限
             </button>
         </nz-space-item>
     </nz-space>
 </ng-template>
 <ng-template #tableFooterTpl>
-    <nz-tag [nzColor]="'magenta'">总数<i nz-icon nzType="number"></i>{{total}}</nz-tag>
+    <nz-tag [nzColor]="'magenta'">总数<i nz-icon nzType="number"></i>{{totalCount$ | async}}</nz-tag>
     <nz-tag [nzColor]="'magenta'">当前页<i nz-icon nzType="number"></i>{{pageIndex}}</nz-tag>
     <nz-tag [nzColor]="'magenta'">每页<i nz-icon nzType="number"></i>{{pageSize}}</nz-tag>
 </ng-template>

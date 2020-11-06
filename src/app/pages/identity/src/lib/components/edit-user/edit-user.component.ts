@@ -1,14 +1,11 @@
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { getPasswordValidators } from 'src/app/pages/theme-shared/uitls/validation.utils';
 import snq from 'snq';
 import { IdentityUserService } from '../../proxy/identity/identity-user.service';
 import { IdentityRoleDto, IdentityUserDto } from '../../proxy/identity';
 import { Store } from '@ngxs/store';
-import { CreateUser, GetUserById, GetUserRoles, UpdateUser } from '../../actions/identity.actions';
-import { finalize, pluck, switchMap, take } from 'rxjs/operators';
-import { Identity } from '../../models/identity';
-import { ListService } from '@abp/ng.core';
+import { UpdateUser } from '../../actions/identity.actions';
 import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
   selector: 'app-edit-user',
@@ -17,14 +14,13 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   providers: []
 })
 export class EditUserComponent implements OnInit {
-  @Input() selected: IdentityUserDto;
+  @Input() selectedUser: IdentityUserDto;
+  @Input() selectedUserRoles: IdentityRoleDto[];
   form: FormGroup;
   assignableRoles: IdentityRoleDto[];
-  selectedUserRoles: IdentityRoleDto[];
   inProgress: boolean;
-  modalBusy: boolean;
-  isModalVisible: boolean;
-  constructor(private identityUserService: IdentityUserService, private fb: FormBuilder,
+  constructor(private identityUserService: IdentityUserService,
+    private fb: FormBuilder,
     private store: Store, private message: NzMessageService) {
   }
   ngOnInit(): void {
@@ -33,54 +29,41 @@ export class EditUserComponent implements OnInit {
   buildForm(): void {
     this.identityUserService.getAssignableRoles().subscribe(({ items }) => {
       this.assignableRoles = items;
-      this.form = this.fb.group({
-        userName: [this.selected.userName || '', [Validators.required, Validators.maxLength(256)]],
-        email: [this.selected.email || '', [Validators.required, Validators.email, Validators.maxLength(256)]],
-        name: [this.selected.name || '', [Validators.maxLength(64)]],
-        surname: [this.selected.surname || '', [Validators.maxLength(64)]],
-        phoneNumber: [this.selected.phoneNumber || '', [Validators.maxLength(16)]],
-        lockoutEnabled: [this.selected.id ? this.selected.lockoutEnabled : true],
-        roleNames: [Array.from(''), [Validators.required, Validators.maxLength(1)]]
-      });
       const passwordValidators = getPasswordValidators(this.store);
-      this.form.addControl('password', new FormControl('', [...passwordValidators]));
-      if (!this.selected.userName) {
-        this.form.get('password').setValidators([...passwordValidators, Validators.required]);
-        this.form.get('password').updateValueAndValidity();
-      }
+      this.form = this.fb.group({
+        userName: [this.selectedUser.userName || '', [Validators.maxLength(256)]],
+        name: [this.selectedUser.name || '', [Validators.maxLength(64)]],
+        surname: [this.selectedUser.surname || '', [Validators.maxLength(64)]],
+        email: [this.selectedUser.email || '', [Validators.email, Validators.maxLength(256)]],
+        phoneNumber: [this.selectedUser.phoneNumber || '', [Validators.maxLength(16)]],
+        lockoutEnabled: [this.selectedUser.lockoutEnabled],
+        roleNames: [this.assignableRoles
+          .filter(it => this.selectedUserRoles
+            .some(i => i.id === it.id) || it.isDefault)
+          .map(t => t.name), [Validators.minLength(1)]],
+        password: ['', [...passwordValidators]]
+      });
     });
   }
 
   submit(): void {
     console.log(this.form.value);
-    // if (!this.form.valid || this.modalBusy) {
-    //   return;
-    // }
-    // this.modalBusy = true;
-    // const { roleNames } = this.form.value;
-    // const mappedRoleNames = snq(
-    //   () =>
-    //     roleNames.filter(role => !!role[Object.keys(role)[0]]).map(role => Object.keys(role)[0]),
-    //   [],
-    // );
-    // this.store
-    //   .dispatch(
-    //     // this.selected.id
-    //     //   ?
-    //     //   : new CreateUser({
-    //     //     ...this.form.value,
-    //     //     roleNames: mappedRoleNames,
-    //     //   }),
-    //     new UpdateUser({
-    //       ...this.selected,
-    //       ...this.form.value,
-    //       id: this.selected.id,
-    //       roleNames: mappedRoleNames,
-    //     })
-    //   )
-    //   .subscribe(() => {
-    //     // this.list.get();
-    //     this.message.success('修改客户信息成功');
-    //   });
+    if (!this.form.valid) {
+      return;
+    }
+    this.store
+      .dispatch(
+        new UpdateUser({
+          ...this.selectedUser,
+          ...this.form.value,
+          id: this.selectedUser.id,
+        })
+      )
+      .subscribe(() => {
+        this.message.success('修改客户信息成功');
+      });
+  }
+  showFormStatus() {
+    console.log(this.form.get('password'));
   }
 }

@@ -12,14 +12,20 @@ export function getPasswordValidators(store: Store): ValidatorFn[] {
 
     if (getRule('RequireDigit') === 'true') {
         passwordRulesArr.push((control: AbstractControl) => {
+            if (control.pristine || control.value === '') {
+                return null;
+            }
             const regex: RegExp = /.*[0-9].*/;
             if (!regex.test(control.value)) {
-                return { requireDigit: true }
+                return { requireDigit: true };
             }
         });
     }
     if (getRule('RequireLowercase') === 'true') {
         passwordRulesArr.push((control: AbstractControl) => {
+            if (control.pristine || control.value === '') {
+                return null;
+            }
             const regex: RegExp = /.*[a-z].*/;
             if (!regex.test(control.value)) {
                 return { requireLowercase: true };
@@ -28,6 +34,9 @@ export function getPasswordValidators(store: Store): ValidatorFn[] {
     }
     if (getRule('RequireUppercase') === 'true') {
         passwordRulesArr.push((control: AbstractControl) => {
+            if (control.pristine || control.value === '') {
+                return null;
+            }
             const regex: RegExp = /.*[A-Z].*/;
             if (!regex.test(control.value)) {
                 return { requireUppercase: true };
@@ -36,6 +45,9 @@ export function getPasswordValidators(store: Store): ValidatorFn[] {
     }
     if (getRule('RequireNonAlphanumeric') === 'true') {
         passwordRulesArr.push((control: AbstractControl) => {
+            if (control.pristine || control.value === '') {
+                return null;
+            }
             const regex: RegExp = /.*[^0-9a-zA-Z].*/;
             if (!regex.test(control.value)) {
                 return { requireNonAlphanumeric: true };
@@ -48,7 +60,6 @@ export function getPasswordValidators(store: Store): ValidatorFn[] {
     }
     passwordRulesArr.push(maxLength(128));
     return passwordRulesArr;
-    // return [validatePassword(passwordRulesArr), minLength(requiredLength), maxLength(128)];
 }
 export function compareValidator(targetKey: string, toMatchKey: string): ValidatorFn {
     return (group: FormGroup): { [key: string]: any } => {

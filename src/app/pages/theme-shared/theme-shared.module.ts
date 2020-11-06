@@ -48,9 +48,12 @@ import {
   httpErrorConfigFactory,
   HTTP_ERROR_CONFIG,
 } from './tokens/http-error.token';
-import { TableBaseComponent } from './components/table-base/table-base.component';
+import { TableHasCheckboxComponent } from './components/table-base/table-has-checkbox.component';
 import { CoreModule } from '@abp/ng.core';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
+
 const SHARED_MODULE = [
   CommonModule,
   FormsModule,
@@ -91,10 +94,12 @@ const SHARED_MODULE = [
   NzListModule,
   NzRadioModule,
   NzCheckboxModule,
+  NzSpinModule,
+  NzAlertModule,
 ];
 
 @NgModule({
-  declarations: [TableBaseComponent],
+  declarations: [TableHasCheckboxComponent],
   imports: [SHARED_MODULE, CoreModule],
   exports: [SHARED_MODULE
   ],

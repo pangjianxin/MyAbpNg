@@ -6,7 +6,7 @@ import { ListService } from '@abp/ng.core';
   selector: 'app-table-base',
   template: ''
 })
-export class TableBaseComponent<TEntity extends ExtensibleFullAuditedEntityDto<string>> {
+export class TableHasCheckboxComponent<TEntity extends ExtensibleFullAuditedEntityDto<string>> {
 
   listOfSelection = [
     {
@@ -52,7 +52,6 @@ export class TableBaseComponent<TEntity extends ExtensibleFullAuditedEntityDto<s
   //     this.total = value.count;
   //   });
   // }
-
   onQueryParamsChange($event: NzTableQueryParams): void {
     const sort = $event.sort.filter(it => !!it.value)[0];
     if (sort) {

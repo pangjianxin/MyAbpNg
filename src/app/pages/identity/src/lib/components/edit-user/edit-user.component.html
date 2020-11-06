@@ -27,101 +27,161 @@
 
 <form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="submit()">
     <nz-form-item>
-        <nz-form-label [nzSpan]="5" nzRequired>
+        <nz-form-label [nzSpan]="5">
             <i nz-icon nzType="user"></i>
             {{ 'AbpIdentity::DisplayName:UserName' | abpLocalization }}
         </nz-form-label>
-        <nz-form-control [nzSpan]="18" [nzErrorTip]="userInfoErrorTpl">
+        <nz-form-control [nzSpan]="18" [nzErrorTip]="userNameErrorTpl">
             <input type="text" formControlName="userName" nz-input
                 [placeholder]="'AbpIdentity::DisplayName:UserName' | abpLocalization">
         </nz-form-control>
+        <ng-template #userNameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">
+                <i nz-icon nzType="alert"></i>
+                该项允许的最大长度为{{control.errors.maxlength.requiredLength}}, 实际长度为{{control.errors.maxlength.actualLength}}
+            </ng-container>
+        </ng-template>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label [nzSpan]="5" nzRequired>
+        <nz-form-label [nzSpan]="5">
             <i nz-icon nzType="user"></i>
             {{ 'AbpIdentity::DisplayName:Name' | abpLocalization }}
         </nz-form-label>
-        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="nameErrorTpl">
             <input type="text" formControlName="name" nz-input
                 [placeholder]="'AbpIdentity::DisplayName:Name' | abpLocalization">
         </nz-form-control>
+        <ng-template #nameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">
+                <i nz-icon nzType="alert"></i>
+                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
+            </ng-container>
+        </ng-template>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label [nzSpan]="5" nzRequired>
+        <nz-form-label [nzSpan]="5">
             <i nz-icon nzType="user"></i>
             {{ 'AbpIdentity::DisplayName:Surname' | abpLocalization }}
         </nz-form-label>
-        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="surnameErrorTpl">
             <input type="text" formControlName="surname" nz-input
                 [placeholder]="'AbpIdentity::DisplayName:Surname' | abpLocalization">
         </nz-form-control>
+        <ng-template #surnameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">
+                <i nz-icon nzType="alert"></i>
+                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
+            </ng-container>
+        </ng-template>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label [nzSpan]="5" nzRequired>
+        <nz-form-label [nzSpan]="5">
             <i nz-icon nzType="mail"></i>
             {{ 'AbpIdentity::DisplayName:Email' | abpLocalization }}
         </nz-form-label>
-        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="emailErrorTpl">
             <input type="text" formControlName="email" nz-input
                 [placeholder]="'AbpIdentity::DisplayName:Email' | abpLocalization">
         </nz-form-control>
+        <ng-template #emailErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('email')">
+                <i nz-icon nzType="alert"></i>
+                不满足邮箱格式
+            </ng-container>
+            <ng-container *ngIf="control.hasError('maxlength')">
+                <i nz-icon nzType="alert"></i>
+                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
+            </ng-container>
+        </ng-template>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label [nzSpan]="5" nzRequired>
+        <nz-form-label [nzSpan]="5">
             <i nz-icon nzType="mobile"></i>
             {{ 'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization }}
         </nz-form-label>
-        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="phoneNumberErrorTpl">
             <input type="text" formControlName="phoneNumber" nz-input
                 [placeholder]="'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization">
         </nz-form-control>
+        <ng-template #phoneNumberErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">
+                <i nz-icon nzType="alert"></i>
+                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
+            </ng-container>
+        </ng-template>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label [nzSpan]="5" nzRequired>
+        <nz-form-label [nzSpan]="5">
             <i nz-icon nzType="lock"></i>
             {{ 'AbpIdentity::DisplayName:Password' | abpLocalization }}
         </nz-form-label>
-        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
-            <input type="text" formControlName="password" nz-input
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="passwordErrorTpl">
+            <input type="password" formControlName="password" nz-input
                 [placeholder]="'AbpIdentity::DisplayName:Password' | abpLocalization">
         </nz-form-control>
+        <ng-template #passwordErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('requireDigit')">
+                <i nz-icon nzType="alert"></i>
+                需要至少一个数字
+            </ng-container>
+            <ng-container *ngIf="control.hasError('requireLowercase')">
+                <i nz-icon nzType="alert"></i>
+                需要至少一个小写字母
+            </ng-container>
+            <ng-container *ngIf="control.hasError('requireUppercase')">
+                <i nz-icon nzType="alert"></i>
+                需要至少一个大写字母
+            </ng-container>
+            <ng-container *ngIf="control.hasError('requireNonAlphanumeric')">
+                <i nz-icon nzType="alert"></i>
+                需要至少一个特殊字符
+            </ng-container>
+            <ng-container *ngIf="control.hasError('minlength')">
+                <i nz-icon nzType="alert"></i>
+                不满足最小长度要求({{control.errors.minlength.requiredLength}})当前长度({{control.errors.minlength.actualLength}})
+            </ng-container>
+            <ng-container *ngIf="control.hasError('maxlength')">
+                <i nz-icon nzType="alert"></i>
+                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
+            </ng-container>
+        </ng-template>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label [nzSpan]="5" nzRequired>
-            <i nz-icon nzType="lock"></i>
+        <nz-form-label [nzSpan]="5">
+            <i nz-icon nzType="file-done"></i>
             {{'AbpIdentity::Roles' | abpLocalization }}
         </nz-form-label>
-        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="userInfoErrorTpl">
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="roleNamesErrorTpl">
             <nz-select [nzMaxTagCount]="3" [nzMaxTagPlaceholder]="tagPlaceHolder" nzMode="multiple"
                 nzPlaceHolder="请选择角色" formControlName="roleNames">
                 <nz-option *ngFor="let item of assignableRoles" [nzLabel]="item.name" [nzValue]="item.name">
                 </nz-option>
             </nz-select>
-            <ng-template #tagPlaceHolder let-selectedList> and {{ selectedList.length }} more selected </ng-template>
+            <ng-template #tagPlaceHolder let-selectedList> 还有其他 {{ selectedList.length }} 条被选择 </ng-template>
+        </nz-form-control>
+        <ng-template #roleNamesErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('minlength')">
+                <i nz-icon nzType="alert"></i>
+                不满足最小长度要求({{control.errors.minlength.requiredLength}})当前长度({{control.errors.minlength.actualLength}})
+            </ng-container>
+        </ng-template>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">
+            <i nz-icon nzType="alert"></i>请注意
+        </nz-form-label>
+        <nz-form-control>
+            <label nz-checkbox formControlName="lockoutEnabled">
+                {{'AbpIdentity::DisplayName:LockoutEnabled' | abpLocalization}}
+            </label>
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
         <nz-form-control [nzOffset]="5" [nzSpan]="12">
             <button nz-button nzType="primary" [nzLoading]="inProgress"
-                [disabled]="!form.valid">{{ 'AbpIdentity::Save' | abpLocalization }}
+                [disabled]="form?.invalid">{{ 'AbpIdentity::Save' | abpLocalization }}
             </button>
+            <button (click)="showFormStatus()">111</button>
         </nz-form-control>
     </nz-form-item>
-
 </form>
-<ng-template #userInfoErrorTpl let-control>
-    <ng-container *ngIf="control.hasError('required')">
-        <p> <i nz-icon nzType="warning"></i>该项必输</p>
-    </ng-container>
-    <ng-container *ngIf="control.hasError('maxlength')">
-        <p> <i nz-icon nzType="warning"></i>
-            该项允许的最大长度为{{control.errors.maxlength.requiredLength}},
-            实际长度为{{control.errors.maxlength.actualLength}}
-        </p>
-    </ng-container>
-    <ng-container *ngIf="control.hasError('email')">
-        <p> <i nz-icon nzType="warning"></i>
-            邮箱格式不正确
-        </p>
-    </ng-container>
-</ng-template>
