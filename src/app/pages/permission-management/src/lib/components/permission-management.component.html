@@ -33,7 +33,7 @@
 
 <div nz-row nzGutter="24">
   <div nz-col nzFlex>
-    <ul nz-menu nzMode="inline">
+    <ul nz-menu nzMode="inline" nzTheme="light">
       <ng-container *ngFor="let item of groups$ | async">
         <li nz-menu-item (click)="showPermissionPanel(item)">
           <i nz-icon nzType="play-circle"></i>
@@ -44,7 +44,7 @@
   </div>
   <div nz-col nzFlex="1 1 auto">
     <nz-tree #permissionTree [nzData]="selectedGroup" nzCheckable [nzCheckedKeys]="permissionCheckedKeys"
-      (nzClick)="nzEvent($event)" (nzExpandChange)="nzEvent($event)" (nzCheckBoxChange)="nzEvent($event)">
+      (nzCheckBoxChange)="nzEvent($event)">
     </nz-tree>
   </div>
 </div>

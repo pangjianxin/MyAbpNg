@@ -1,10 +1,11 @@
 import { ApplicationConfiguration, ConfigState, GetAppConfiguration } from '@abp/ng.core';
 import {
+  AfterViewInit,
   Component,
   Input, OnInit, ViewChild
 } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { NzFormatEmitEvent, NzTreeComponent, NzTreeNode, NzTreeNodeComponent } from 'ng-zorro-antd/tree';
+import { NzFormatEmitEvent, NzTreeComponent, NzTreeNode, NzTreeNodeComponent, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { Observable, of } from 'rxjs';
 import { finalize, map, pluck, switchMap, take, tap } from 'rxjs/operators';
 import { GetPermissions, UpdatePermissions } from '../actions/permission-management.actions';
@@ -23,8 +24,6 @@ export class PermissionManagementComponent implements OnInit {
 
   permissionCheckedKeys: string[];
 
-  currentPermissionCheckedKeys: string[];
-
   @Input() readonly providerName: string; // U：user,R:role等等
 
   @Input() readonly providerKey: string; // 目标的主键
@@ -37,7 +36,7 @@ export class PermissionManagementComponent implements OnInit {
 
   @ViewChild('permissionTree', { static: false, read: NzTreeComponent }) permissionTree: NzTreeComponent;
 
-  selectedGroup: NzTreeNode[];
+  selectedGroup: NzTreeNodeOptions[];
 
   permissions: PermissionGrantInfoDto[];
 
@@ -47,32 +46,62 @@ export class PermissionManagementComponent implements OnInit {
     this.initTree().subscribe();
   }
   nzEvent(event: NzFormatEmitEvent): void {
-    console.log(event);
-    // 如果是节点的话就删除/或增加节点下所有的数
-    if (!event.node.origin.isLeaf) {
-      const indexN = this.permissionCheckedKeys.indexOf(event.node.origin.key);
-      if (indexN > -1) {// 大于-1表示存在
-        this.permissionCheckedKeys.splice(indexN, 1);
-        event.node.origin.children.forEach(value => {
-          const i = this.permissionCheckedKeys.indexOf(event.node.origin.key);
-          if (i > -1) {
-            this.permissionCheckedKeys.splice(i, 1);
-          }
-        });
-      } else {
-        this.permissionCheckedKeys.push(event.node.origin.key);
-        event.node.origin.children.forEach(value => {
-          this.permissionCheckedKeys.push(value.key);
-        });
+    const candidatePermissionList = [];
+    const updatedNode: NzTreeNodeOptions = event.node.origin;
+    if (updatedNode.isLeaf) {
+      const parentNodeHasThisStatus = this.permissionTree.getCheckedNodeList().some(it => it.key === event.node.parentNode.key);
+      console.log(parentNodeHasThisStatus);
+      if (!parentNodeHasThisStatus) {
+        candidatePermissionList.push(event.node.parentNode.key);
       }
-    }
-    const index = this.permissionCheckedKeys.indexOf(event.node.origin.key);
-    if (index > -1) {
-      this.permissionCheckedKeys.splice(index, 1);
+      candidatePermissionList.push(updatedNode.key);
     } else {
-      this.permissionCheckedKeys.push(event.node.origin.key);
+      candidatePermissionList.push(updatedNode.key);
+      updatedNode.children.forEach(element => {
+        candidatePermissionList.push(element.key);
+      });
     }
+    candidatePermissionList.forEach(element => {
+      const index = this.permissionCheckedKeys.indexOf(element);
+      if (index > -1) {
+        this.permissionCheckedKeys.splice(index, 1);
+      } else {
+        this.permissionCheckedKeys.push(element);
+      }
+    });
+
     console.log(this.permissionCheckedKeys);
+    // console.log(event);
+
+    // console.log(this.permissionTree.getHalfCheckedNodeList());
+
+    // 如果是节点的话就删除/或增加节点下所有的数
+    // if (!event.node.origin.isLeaf) {
+    //   const indexN = this.permissionCheckedKeys.indexOf(event.node.origin.key);
+    //   if (indexN > -1) {// 大于-1表示存在
+    //     this.permissionCheckedKeys.splice(indexN, 1);
+    //     event.node.origin.children.forEach(value => {
+    //       const i = this.permissionCheckedKeys.indexOf(event.node.origin.key);
+    //       if (i > -1) {
+    //         this.permissionCheckedKeys.splice(i, 1);
+    //       }
+    //     });
+    //   } else {
+    //     this.permissionCheckedKeys.push(event.node.origin.key);
+    //     event.node.origin.children.forEach(value => {
+    //       this.permissionCheckedKeys.push(value.key);
+    //     });
+    //   }
+    // }
+    // const index = this.permissionCheckedKeys.indexOf(event.node.origin.key);
+    // if (index > -1) {
+    //   this.permissionCheckedKeys.splice(index, 1);
+    // } else {
+    //   this.permissionCheckedKeys.push(event.node.origin.key);
+    // }
+
+
+
   }
   submit(): void {
     const unchangedPermissions = getPermissions(
@@ -153,20 +182,15 @@ export class PermissionManagementComponent implements OnInit {
 
   showPermissionPanel(group: PermissionGroupDto): void {
     this.selectedGroup = permissionGroupMap(group);
-    this.currentPermissionCheckedKeys = this.permissionCheckedKeys
-      .filter(it => this.selectedGroup
-        .some(i => i.key === it
-          || i.children.some(t => t.key === it)));
     this.permissionCheckedKeys = [...this.permissionCheckedKeys];
     console.log(this.permissionCheckedKeys);
-    console.log(this.currentPermissionCheckedKeys);
   }
 }
 function getPermissions(groups: PermissionGroupDto[]): PermissionGrantInfoDto[] {
   return groups.reduce((acc, val) => [...acc, ...val.permissions], []);
 }
 
-function permissionGroupMap(group: PermissionGroupDto): NzTreeNode[] {
+function permissionGroupMap(group: PermissionGroupDto): NzTreeNodeOptions[] {
   // const permissionNodes: { [key: string]: NzTreeNode } = {};
   // group.permissions.forEach(value => {
   //   if (value.parentName) {
@@ -186,12 +210,15 @@ function permissionGroupMap(group: PermissionGroupDto): NzTreeNode[] {
   // });
   // Object.values(permissionNodes);
   // return [...Object.values(permissionNodes)];
-  const parentNodes = group.permissions.filter(it => !it.parentName)
-    .map(item => new NzTreeNode({ title: item.displayName, key: item.name, expanded: true, isLeaf: false, children: [] }));
+  const parentNodes: NzTreeNodeOptions[] = group.permissions
+    .filter(it => !it.parentName)
+    .map(item => {
+      return { title: item.displayName, key: item.name, expanded: true, isLeaf: false, children: [] }
+    });
   parentNodes.forEach(value => {
     group.permissions.forEach(it => {
       if (it.parentName === value.key) {
-        value.addChildren([{ title: it.displayName, key: it.name, isLeaf: true }]);
+        value.children.push({ title: it.displayName, key: it.name, isLeaf: true });
       }
     });
   });

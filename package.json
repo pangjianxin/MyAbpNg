@@ -53,5 +53,6 @@
   },
   "main": "index.js",
   "author": "pangjianxin <343516704@qq.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": "git@github.com:pangjianxin/MyAbpNg.git"
 }
