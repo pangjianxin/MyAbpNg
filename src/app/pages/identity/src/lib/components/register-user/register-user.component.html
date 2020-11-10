@@ -5,14 +5,14 @@
         <nz-breadcrumb-item>
             <a>用户</a>
         </nz-breadcrumb-item>
-        <nz-breadcrumb-item>编辑</nz-breadcrumb-item>
+        <nz-breadcrumb-item>创建</nz-breadcrumb-item>
     </nz-breadcrumb>
     <!--avatar-->
     <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
     <!--title-->
-    <nz-page-header-title>编辑信息</nz-page-header-title>
+    <nz-page-header-title>创建用户</nz-page-header-title>
     <!--subtitle-->
-    <nz-page-header-subtitle>该页面修改所有用户信息</nz-page-header-subtitle>
+    <nz-page-header-subtitle>创建一个系统用户</nz-page-header-subtitle>
     <!--tags-->
     <nz-page-header-tags>
         <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
@@ -22,7 +22,7 @@
     </nz-page-header-extra>
     <nz-page-header-content>
         <i nz-icon nzType="info-circle"></i>
-        可以在该页面修改用户的基本信息，包括用户的用户名、名字、姓氏以及密码等。
+        前面有星号(*)的表示为必输项
     </nz-page-header-content>
 </nz-page-header>
 <nz-divider nzOrientation="left" [nzText]="nzText">
@@ -33,7 +33,7 @@
 </nz-divider>
 <form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="submit()">
     <nz-form-item>
-        <nz-form-label [nzSpan]="5">
+        <nz-form-label [nzSpan]="5" nzRequired>
             <i nz-icon nzType="user"></i>
             {{ 'AbpIdentity::DisplayName:UserName' | abpLocalization }}
         </nz-form-label>
@@ -81,43 +81,7 @@
         </ng-template>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label [nzSpan]="5">
-            <i nz-icon nzType="mail"></i>
-            {{ 'AbpIdentity::DisplayName:Email' | abpLocalization }}
-        </nz-form-label>
-        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="emailErrorTpl">
-            <input type="text" formControlName="email" nz-input
-                [placeholder]="'AbpIdentity::DisplayName:Email' | abpLocalization">
-        </nz-form-control>
-        <ng-template #emailErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('email')">
-                <i nz-icon nzType="alert"></i>
-                不满足邮箱格式
-            </ng-container>
-            <ng-container *ngIf="control.hasError('maxlength')">
-                <i nz-icon nzType="alert"></i>
-                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
-            </ng-container>
-        </ng-template>
-    </nz-form-item>
-    <nz-form-item>
-        <nz-form-label [nzSpan]="5">
-            <i nz-icon nzType="mobile"></i>
-            {{ 'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization }}
-        </nz-form-label>
-        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="phoneNumberErrorTpl">
-            <input type="text" formControlName="phoneNumber" nz-input
-                [placeholder]="'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization">
-        </nz-form-control>
-        <ng-template #phoneNumberErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('maxlength')">
-                <i nz-icon nzType="alert"></i>
-                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
-            </ng-container>
-        </ng-template>
-    </nz-form-item>
-    <nz-form-item>
-        <nz-form-label [nzSpan]="5">
+        <nz-form-label [nzSpan]="5" nzRequired>
             <i nz-icon nzType="lock"></i>
             {{ 'AbpIdentity::DisplayName:Password' | abpLocalization }}
         </nz-form-label>
@@ -146,6 +110,42 @@
                 <i nz-icon nzType="alert"></i>
                 不满足最小长度要求({{control.errors.minlength.requiredLength}})当前长度({{control.errors.minlength.actualLength}})
             </ng-container>
+            <ng-container *ngIf="control.hasError('maxlength')">
+                <i nz-icon nzType="alert"></i>
+                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
+            </ng-container>
+        </ng-template>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="mail"></i>
+            {{ 'AbpIdentity::DisplayName:Email' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="emailErrorTpl">
+            <input type="text" formControlName="email" nz-input
+                [placeholder]="'AbpIdentity::DisplayName:Email' | abpLocalization">
+        </nz-form-control>
+        <ng-template #emailErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('email')">
+                <i nz-icon nzType="alert"></i>
+                不满足邮箱格式
+            </ng-container>
+            <ng-container *ngIf="control.hasError('maxlength')">
+                <i nz-icon nzType="alert"></i>
+                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
+            </ng-container>
+        </ng-template>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">
+            <i nz-icon nzType="mobile"></i>
+            {{ 'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" nzHasFeedback [nzErrorTip]="phoneNumberErrorTpl">
+            <input type="text" formControlName="phoneNumber" nz-input
+                [placeholder]="'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization">
+        </nz-form-control>
+        <ng-template #phoneNumberErrorTpl let-control>
             <ng-container *ngIf="control.hasError('maxlength')">
                 <i nz-icon nzType="alert"></i>
                 不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})

@@ -13,12 +13,13 @@ import {
   IdentityUserDto,
 } from '../../proxy/identity/models';
 import { EditUserComponent } from '../edit-user/edit-user.component';
-import { RegisterComponent } from 'src/app/pages/account/src/lib/components/register/register.component';
 import { IdentityState } from '../../states/identity.state';
 import { Observable } from 'rxjs';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { pluck, switchMap, take, tap } from 'rxjs/operators';
 import { Identity } from '../../models/identity';
+import { RegisterUserComponent } from '../register-user/register-user.component';
+import { PermissionManagementComponent } from 'src/app/pages/permission-management/src/lib/components';
 
 @Component({
   selector: 'app-users',
@@ -74,7 +75,6 @@ export class UsersComponent implements OnInit {
   openModiUserInfoDialog(id: string): void {
     this.store.dispatch(new GetUserById(id))
       .pipe(switchMap(() => this.store.dispatch(new GetUserRoles(id))),
-        tap(value => console.log(value)),
         pluck('IdentityState'), // 可以过滤属性{ConfigState:{},IdentityState:{}......}
         take(1))
       .subscribe((state: Identity.State) => {
@@ -86,7 +86,7 @@ export class UsersComponent implements OnInit {
           nzFooter: [],
           nzComponentParams: {
             selectedUser: this.selectedUser,
-            selectedUserRoles: this.selectedUserRoles
+            selectedUserRoles: this.selectedUserRoles || []
           },
           nzWidth: '60%'
         });
@@ -95,8 +95,8 @@ export class UsersComponent implements OnInit {
 
   openRegisterUserDialog(): void {
     this.modal.create({
-      nzTitle: '编辑用户信息',
-      nzContent: RegisterComponent,
+      nzTitle: '创建用户',
+      nzContent: RegisterUserComponent,
       nzFooter: [],
       nzWidth: '60%'
     });
@@ -125,7 +125,18 @@ export class UsersComponent implements OnInit {
     this.list.filter = $event.filter[0]?.value;
   }
   refresh(): void {
-    // this.list.get();
-    console.log(this.store.selectSnapshot((state: Identity.State) => state.selectedUser));
+    this.list.get();
+  }
+  openUserPermissionDialog(key: string): void {
+    this.modal.create({
+      nzTitle: '',
+      nzFooter: [],
+      nzContent: PermissionManagementComponent,
+      nzComponentParams: {
+        providerName: 'U',
+        providerKey: key
+      },
+      nzWidth: '60%'
+    });
   }
 }

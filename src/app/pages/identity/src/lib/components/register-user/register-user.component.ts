@@ -9,17 +9,14 @@ import { IdentityRoleDto, IdentityUserService } from '../../proxy/identity';
 
 @Component({
   selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  templateUrl: './register-user.component.html',
 })
-export class RegisterComponent implements OnInit {
+export class RegisterUserComponent implements OnInit {
   form: FormGroup;
   assignableRoles: IdentityRoleDto[];
-  selectedUserRoles: IdentityRoleDto[];
   inProgress: boolean;
-  modalBusy: boolean;
-  isModalVisible: boolean;
-  constructor(private identityUserService: IdentityUserService, private fb: FormBuilder,
+  constructor(private identityUserService: IdentityUserService,
+    private fb: FormBuilder,
     private store: Store, private message: NzMessageService) {
   }
   ngOnInit(): void {
@@ -28,42 +25,33 @@ export class RegisterComponent implements OnInit {
   buildForm(): void {
     this.identityUserService.getAssignableRoles().subscribe(({ items }) => {
       this.assignableRoles = items;
+      const passwordValidators = getPasswordValidators(this.store);
       this.form = this.fb.group({
-        userName: ['', [Validators.maxLength(256)]],
-        email: ['', [Validators.email, Validators.maxLength(256)]],
+        userName: ['', [Validators.required, Validators.maxLength(256)]],
         name: ['', [Validators.maxLength(64)]],
         surname: ['', [Validators.maxLength(64)]],
+        email: ['', [Validators.email, Validators.maxLength(256), Validators.required]],
         phoneNumber: ['', [Validators.maxLength(16)]],
         lockoutEnabled: [false],
-        roleNames: [Array.from(''), [Validators.maxLength(1)]]
+        roleNames: [Array.from(''), [Validators.minLength(1)]],
+        password: ['', [...passwordValidators, Validators.required]]
       });
-      const passwordValidators = getPasswordValidators(this.store);
-      this.form.addControl('password', new FormControl('', [...passwordValidators, Validators.required]));
     });
   }
 
   submit(): void {
-    console.log(this.form.value);
-    if (!this.form.valid || this.modalBusy) {
+    if (!this.form.valid) {
       return;
     }
-    this.modalBusy = true;
-    const { roleNames } = this.form.value;
-    const mappedRoleNames = snq(
-      () =>
-        roleNames.filter(role => !!role[Object.keys(role)[0]]).map(role => Object.keys(role)[0]),
-      [],
-    );
+    console.log(this.form.value);
     this.store
       .dispatch(
         new CreateUser({
           ...this.form.value,
-          roleNames: mappedRoleNames,
         })
       )
       .subscribe(() => {
-        // this.list.get();
-        this.message.success('修改客户信息成功');
+        this.message.success('创建客户成功');
       });
   }
 }

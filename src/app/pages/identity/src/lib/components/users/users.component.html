@@ -84,7 +84,7 @@
                         </button>
                     </nz-space-item>
                     <nz-space-item>
-                        <button nz-button nz-col nzType="danger" nzGhost>
+                        <button nz-button nz-col nzType="danger" nzGhost (click)="openUserPermissionDialog(data.id)">
                             <i nz-icon nzType="setting"></i>
                             权限
                         </button>
@@ -97,13 +97,13 @@
 <ng-template #tableTitleTpl>
     <nz-space nzDirection="horizontal">
         <nz-space-item>
-            <button nz-button nzType="primary" (click)="refresh()">
+            <button nz-button nzType="primary" nzGhost (click)="refresh()">
                 <i nz-icon [nzType]="'sync'" [nzSpin]="true"></i>
                 刷新
             </button>
         </nz-space-item>
         <nz-space-item>
-            <button nz-button nzType="danger" (click)="openRegisterUserDialog()">
+            <button nz-button nzType="danger" nzGhost (click)="openRegisterUserDialog()">
                 <i nz-icon nzType="user-add"></i>
                 新建
             </button>

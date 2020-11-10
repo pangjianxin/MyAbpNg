@@ -63,7 +63,4 @@ export class EditUserComponent implements OnInit {
         this.message.success('修改客户信息成功');
       });
   }
-  showFormStatus() {
-    console.log(this.form.get('password'));
-  }
 }

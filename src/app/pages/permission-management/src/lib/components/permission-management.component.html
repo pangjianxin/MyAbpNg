@@ -1,0 +1,50 @@
+<nz-page-header class="site-page-header">
+  <!--breadcrumb-->
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item>主页</nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a>用户</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>编辑用户权限</nz-breadcrumb-item>
+  </nz-breadcrumb>
+  <!--avatar-->
+  <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
+  <!--title-->
+  <nz-page-header-title>编辑用户权限</nz-page-header-title>
+  <!--subtitle-->
+  <nz-page-header-subtitle>为特定用户定制权限信息</nz-page-header-subtitle>
+  <!--tags-->
+  <nz-page-header-tags>
+    <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
+  </nz-page-header-tags>
+  <!--extra-->
+  <nz-page-header-extra>
+    <button nz-button nzType="primary" (click)="submit()">
+      <i nz-icon nzType="save"></i>提交
+    </button>
+  </nz-page-header-extra>
+  <nz-page-header-content>
+
+  </nz-page-header-content>
+</nz-page-header>
+<nz-divider [nzText]="text" nzOrientation="left">
+  <ng-template #text><i nz-icon nzType="form"></i> 表单项</ng-template>
+</nz-divider>
+
+<div nz-row nzGutter="24">
+  <div nz-col nzFlex>
+    <ul nz-menu nzMode="inline">
+      <ng-container *ngFor="let item of groups$ | async">
+        <li nz-menu-item (click)="showPermissionPanel(item)">
+          <i nz-icon nzType="play-circle"></i>
+          {{item.displayName}}
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+  <div nz-col nzFlex="1 1 auto">
+    <nz-tree #permissionTree [nzData]="selectedGroup" nzCheckable [nzCheckedKeys]="permissionCheckedKeys"
+      (nzClick)="nzEvent($event)" (nzExpandChange)="nzEvent($event)" (nzCheckBoxChange)="nzEvent($event)">
+    </nz-tree>
+  </div>
+</div>

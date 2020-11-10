@@ -8,11 +8,11 @@ import { IdentityState } from './states/identity.state';
 import { PermissionManagementModule } from 'src/app/pages/permission-management/src/lib/permission-management.module';
 import { EditUserComponent } from './components/edit-user/edit-user.component';
 import { CoreModule, LazyModuleFactory } from '@abp/ng.core';
-import { RegisterComponent } from './components/register/register.component';
+import { RegisterUserComponent } from './components/register-user/register-user.component';
 
 
 @NgModule({
-  declarations: [RolesComponent, UsersComponent, EditUserComponent, RegisterComponent],
+  declarations: [RolesComponent, UsersComponent, RegisterUserComponent, EditUserComponent],
   exports: [RolesComponent, UsersComponent],
   imports: [
     NgxsModule.forFeature([IdentityState]),

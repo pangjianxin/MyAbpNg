@@ -53,6 +53,8 @@ import { CoreModule } from '@abp/ng.core';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzTreeModule } from 'ng-zorro-antd/tree';
+
 
 const SHARED_MODULE = [
   CommonModule,
@@ -96,6 +98,7 @@ const SHARED_MODULE = [
   NzCheckboxModule,
   NzSpinModule,
   NzAlertModule,
+  NzTreeModule,
 ];
 
 @NgModule({

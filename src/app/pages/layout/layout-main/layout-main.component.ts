@@ -16,7 +16,6 @@ export class LayoutMainComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.appRoutes$.subscribe(value => console.log(value));
   }
   getParentCount(item: TreeNode<ABP.Route>, count: number = 0): number {
     if (item.parent) {
