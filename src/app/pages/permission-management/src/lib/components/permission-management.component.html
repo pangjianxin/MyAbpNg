@@ -31,20 +31,33 @@
   <ng-template #text><i nz-icon nzType="form"></i> 表单项</ng-template>
 </nz-divider>
 
+<!-- <nz-tabset nzTabPosition="left" [(nzSelectedIndex)]="selectedIndex">
+  <nz-tab *ngFor="let tab of groups$ | async" [nzTitle]="tab.displayName" style="height:auto;">
+    <h2>{{tab.displayName}}</h2>
+    <label *ngFor="let permission of selectedGroupPermissions$ | async; let i = index;trackBy: trackByFn"
+      [ngStyle]="permission.style" nz-checkbox>permission</label>
+  </nz-tab>
+</nz-tabset> -->
+
+
 <div nz-row nzGutter="24">
   <div nz-col nzFlex>
     <ul nz-menu nzMode="inline" nzTheme="light">
       <ng-container *ngFor="let item of groups$ | async">
-        <li nz-menu-item (click)="showPermissionPanel(item)">
+        <li nz-menu-item (click)="onChagePermissionGroup(item)">
           <i nz-icon nzType="play-circle"></i>
           {{item.displayName}}
         </li>
       </ng-container>
     </ul>
   </div>
-  <div nz-col nzFlex="1 1 auto">
-    <nz-tree #permissionTree [nzData]="selectedGroup" nzCheckable [nzCheckedKeys]="permissionCheckedKeys"
-      (nzCheckBoxChange)="nzEvent($event)">
-    </nz-tree>
+  <div nz-col nzFlex>
+    <nz-checkbox-wrapper style="width: 100%;">
+      <div nz-row *ngFor="let permission of selectedGroupPermissions$ | async; let i = index;trackBy: trackByFn">
+        <label #permissionCheckBox="nzCheckbox" [ngStyle]="permission.style" nz-checkbox
+          [ngModel]="permission.isGranted" (ngModelChange)="onClickCheckbox(permission,permissionCheckBox.nzChecked)"
+          [disabled]="isGrantedByOtherProviderName(permission.grantedProviders)">{{permission.displayName}}</label>
+      </div>
+    </nz-checkbox-wrapper>
   </div>
 </div>

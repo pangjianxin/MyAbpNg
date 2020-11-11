@@ -2,12 +2,14 @@ import { ApplicationConfiguration, ConfigState, GetAppConfiguration } from '@abp
 import {
   AfterViewInit,
   Component,
-  Input, OnInit, ViewChild
+  Input, OnInit, TrackByFunction, ViewChild
 } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
+import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzFormatEmitEvent, NzTreeComponent, NzTreeNode, NzTreeNodeComponent, NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 import { Observable, of } from 'rxjs';
 import { finalize, map, pluck, switchMap, take, tap } from 'rxjs/operators';
+import { LocaleDirection } from 'src/app/pages/theme-shared/models/common';
 import { GetPermissions, UpdatePermissions } from '../actions/permission-management.actions';
 import { GetPermissionListResultDto, PermissionGrantInfoDto, PermissionGroupDto, ProviderInfoDto, UpdatePermissionDto } from '../proxy/models';
 import { PermissionManagementState } from '../states/permission-management.state';
@@ -22,144 +24,132 @@ type PermissionWithStyle = PermissionGrantInfoDto & {
 })
 export class PermissionManagementComponent implements OnInit {
 
-  permissionCheckedKeys: string[];
-
   @Input() readonly providerName: string; // U：user,R:role等等
 
   @Input() readonly providerKey: string; // 目标的主键
-
-  @Input() readonly hideBadges = false;
 
   @Select(PermissionManagementState.getPermissionGroups) groups$: Observable<PermissionGroupDto[]>;
 
   @Select(PermissionManagementState.getEntityDisplayName) entityName$: Observable<string>;
 
-  @ViewChild('permissionTree', { static: false, read: NzTreeComponent }) permissionTree: NzTreeComponent;
-
-  selectedGroup: NzTreeNodeOptions[];
+  selectedGroup: PermissionGroupDto;
 
   permissions: PermissionGrantInfoDto[];
 
+  get selectedGroupPermissions$(): Observable<PermissionWithStyle[]> {
+    const margin = `margin-${(document.body.dir as LocaleDirection) === 'rtl' ? 'right' : 'left'
+      }.px`;
+    return this.groups$.pipe(
+      // 如果有当前选中的组，则从state的groups$中找到这个当前组，并返回这个组包含的所有权限
+      map(groups =>
+        this.selectedGroup
+          ? groups.find(group => group.name === this.selectedGroup.name).permissions
+          : [],
+      ),
+      // 进而将返回的权限转换为一个包含style属性的权限超集
+      map<PermissionGrantInfoDto[], PermissionWithStyle[]>(permissions =>
+        permissions.map(
+          permission =>
+            (({
+              ...permission,
+              style: { [margin]: calculateMargin(permissions, permission) },
+              isGranted: this.permissions.find(per => per.name === permission.name).isGranted,
+            } as any) as PermissionWithStyle),
+        ),
+      ),
+    );
+  }
 
-  constructor(private store: Store) { }
+  constructor(private store: Store, private message: NzMessageService) { }
+
   ngOnInit(): void {
-    this.initTree().subscribe();
+    this.init().subscribe();
   }
-  nzEvent(event: NzFormatEmitEvent): void {
-    const candidatePermissionList = [];
-    const updatedNode: NzTreeNodeOptions = event.node.origin;
-    if (updatedNode.isLeaf) {
-      const parentNodeHasThisStatus = this.permissionTree.getCheckedNodeList().some(it => it.key === event.node.parentNode.key);
-      console.log(parentNodeHasThisStatus);
-      if (!parentNodeHasThisStatus) {
-        candidatePermissionList.push(event.node.parentNode.key);
-      }
-      candidatePermissionList.push(updatedNode.key);
-    } else {
-      candidatePermissionList.push(updatedNode.key);
-      updatedNode.children.forEach(element => {
-        candidatePermissionList.push(element.key);
-      });
+  // 这里判断权限是否还有其他提供者提供，如果有，那么这条记录是修改不了的，因为由其他的提供者所决定
+  isGrantedByOtherProviderName(grantedProviders: ProviderInfoDto[]): boolean {
+    if (grantedProviders.length) {
+      return grantedProviders.findIndex(p => p.providerName !== this.providerName) > -1;
     }
-    candidatePermissionList.forEach(element => {
-      const index = this.permissionCheckedKeys.indexOf(element);
-      if (index > -1) {
-        this.permissionCheckedKeys.splice(index, 1);
-      } else {
-        this.permissionCheckedKeys.push(element);
-      }
-    });
-
-    console.log(this.permissionCheckedKeys);
-    // console.log(event);
-
-    // console.log(this.permissionTree.getHalfCheckedNodeList());
-
-    // 如果是节点的话就删除/或增加节点下所有的数
-    // if (!event.node.origin.isLeaf) {
-    //   const indexN = this.permissionCheckedKeys.indexOf(event.node.origin.key);
-    //   if (indexN > -1) {// 大于-1表示存在
-    //     this.permissionCheckedKeys.splice(indexN, 1);
-    //     event.node.origin.children.forEach(value => {
-    //       const i = this.permissionCheckedKeys.indexOf(event.node.origin.key);
-    //       if (i > -1) {
-    //         this.permissionCheckedKeys.splice(i, 1);
-    //       }
-    //     });
-    //   } else {
-    //     this.permissionCheckedKeys.push(event.node.origin.key);
-    //     event.node.origin.children.forEach(value => {
-    //       this.permissionCheckedKeys.push(value.key);
-    //     });
-    //   }
-    // }
-    // const index = this.permissionCheckedKeys.indexOf(event.node.origin.key);
-    // if (index > -1) {
-    //   this.permissionCheckedKeys.splice(index, 1);
-    // } else {
-    //   this.permissionCheckedKeys.push(event.node.origin.key);
-    // }
-
-
-
+    return false;
   }
+  onChagePermissionGroup(group: PermissionGroupDto): void {
+    this.selectedGroup = group;
+  }
+
+  permissionGrantedChange(event): void {
+    console.log(event);
+  }
+
+  onClickCheckbox(clickedPermission: PermissionGrantInfoDto, value: boolean): void {
+    if (clickedPermission.isGranted && this.isGrantedByOtherProviderName(clickedPermission.grantedProviders)) {
+      return;
+    }
+    setTimeout(() => {
+      this.permissions = this.permissions.map(per => {
+        if (clickedPermission.name === per.name) {
+          return { ...per, isGranted: !per.isGranted };
+        } else if (clickedPermission.name === per.parentName && clickedPermission.isGranted) {
+          return { ...per, isGranted: false };
+        } else if (clickedPermission.parentName === per.name && !clickedPermission.isGranted) {
+          return { ...per, isGranted: true };
+        }
+        return per;
+      });
+    }, 0);
+  }
+  trackByFn: TrackByFunction<PermissionGroupDto> = (_, item) => item.name;
+
   submit(): void {
     const unchangedPermissions = getPermissions(
       this.store.selectSnapshot(PermissionManagementState.getPermissionGroups),
     );
-    // const changedPermissions: UpdatePermissionDto[] = this.permissions
-    //   .filter(per =>
-    //     unchangedPermissions.find(unchanged => unchanged.name === per.name).isGranted ===
-    //       per.isGranted
-    //       ? false
-    //       : true,
-    //   )
-    //   .map(({ name, isGranted }) => ({ name, isGranted }));
-
-    // if (!changedPermissions.length) {
-    //   this.visible = false;
-    //   return;
-    // }
-
-    // this.modalBusy = true;
-    // this.store
-    //   .dispatch(
-    //     new UpdatePermissions({
-    //       providerKey: this.providerKey,
-    //       providerName: this.providerName,
-    //       permissions: changedPermissions,
-    //     }),
-    //   )
-    //   .pipe(
-    //     switchMap(() =>
-    //       this.shouldFetchAppConfig() ? this.store.dispatch(GetAppConfiguration) : of(null),
-    //     ),
-    //     // finalize(() => (this.modalBusy = false)),
-    //   )
-    //   .subscribe(() => {
-    //     //  this.visible = false;
-    //   });
+    const changedPermissions: UpdatePermissionDto[] = this.permissions
+      .filter(per =>
+        unchangedPermissions.find(unchanged => unchanged.name === per.name).isGranted === per.isGranted
+          ? false
+          : true)
+      .map(({ name, isGranted }) => ({ name, isGranted }));
+    if (!changedPermissions.length) {
+      //   this.visible = false;
+      return;
+    }
+    //  this.modalBusy = true;
+    this.store
+      .dispatch(
+        new UpdatePermissions({
+          providerKey: this.providerKey,
+          providerName: this.providerName,
+          permissions: changedPermissions,
+        }),
+      )
+      .pipe(
+        switchMap(() =>
+          this.shouldFetchAppConfig() ? this.store.dispatch(GetAppConfiguration) : of(null)))
+      .subscribe(() => {
+        this.message.success('操作成功');
+      });
   }
-  // shouldFetchAppConfig(): boolean {
-  //   const currentUser = this.store.selectSnapshot(
-  //     ConfigState.getOne('currentUser'),
-  //   ) as ApplicationConfiguration.CurrentUser;
+  shouldFetchAppConfig(): boolean {
+    const currentUser = this.store.selectSnapshot(
+      ConfigState.getOne('currentUser'),
+    ) as ApplicationConfiguration.CurrentUser;
 
-  //   if (this.providerName === 'R') {
-  //     return currentUser.roles.some(role => role === this.providerKey);
-  //   }
+    if (this.providerName === 'R') {
+      return currentUser.roles.some(role => role === this.providerKey);
+    }
 
-  //   if (this.providerName === 'U') {
-  //     return currentUser.id === this.providerKey;
-  //   }
+    if (this.providerName === 'U') {
+      return currentUser.id === this.providerKey;
+    }
 
-  //   return false;
-  // }
+    return false;
+  }
 
-  initTree(): Observable<any> {
+  init(): Observable<any> {
     if (!this.providerKey || !this.providerName) {
       throw new Error('Provider Key and Provider Name are required.');
     }
+    console.log(this.providerName);
     return this.store
       .dispatch(
         new GetPermissions({
@@ -169,60 +159,26 @@ export class PermissionManagementComponent implements OnInit {
       ).pipe(
         pluck('PermissionManagementState', 'permissionRes'),
         tap((permissionRes: GetPermissionListResultDto) => {
-          this.selectedGroup = permissionGroupMap(permissionRes.groups[0]);
+          this.selectedGroup = permissionRes.groups[0];
           this.permissions = getPermissions(permissionRes.groups);
-          this.permissionCheckedKeys = this.permissions.map(value => {
-            if (value.isGranted) {
-              return value.name;
-            }
-          });
         }),
       );
-  }
-
-  showPermissionPanel(group: PermissionGroupDto): void {
-    this.selectedGroup = permissionGroupMap(group);
-    this.permissionCheckedKeys = [...this.permissionCheckedKeys];
-    console.log(this.permissionCheckedKeys);
   }
 }
 function getPermissions(groups: PermissionGroupDto[]): PermissionGrantInfoDto[] {
   return groups.reduce((acc, val) => [...acc, ...val.permissions], []);
 }
 
-function permissionGroupMap(group: PermissionGroupDto): NzTreeNodeOptions[] {
-  // const permissionNodes: { [key: string]: NzTreeNode } = {};
-  // group.permissions.forEach(value => {
-  //   if (value.parentName) {
-  //     permissionNodes[value.name] = new NzTreeNode({
-  //       title: value.displayName,
-  //       key: value.name,
-  //       isLeaf: true,
-  //       parentNode: permissionNodes[value.parentName]
-  //     });
-  //   } else {
-  //     permissionNodes[value.name] = new NzTreeNode({
-  //       title: value.displayName,
-  //       key: value.name,
-  //       isLeaf: true
-  //     });
-  //   }
-  // });
-  // Object.values(permissionNodes);
-  // return [...Object.values(permissionNodes)];
-  const parentNodes: NzTreeNodeOptions[] = group.permissions
-    .filter(it => !it.parentName)
-    .map(item => {
-      return { title: item.displayName, key: item.name, expanded: true, isLeaf: false, children: [] }
-    });
-  parentNodes.forEach(value => {
-    group.permissions.forEach(it => {
-      if (it.parentName === value.key) {
-        value.children.push({ title: it.displayName, key: it.name, isLeaf: true });
-      }
-    });
-  });
-  return parentNodes;
+function calculateMargin(
+  permissions: PermissionGrantInfoDto[],
+  permission: PermissionGrantInfoDto,
+): number {
+  const parentPermission = permissions.find(per => per.name === permission.parentName);
+
+  if (parentPermission && parentPermission.parentName) {
+    let margin = 20;
+    return (margin += calculateMargin(permissions, parentPermission));
+  }
+
+  return parentPermission ? 20 : 0;
 }
-
-
