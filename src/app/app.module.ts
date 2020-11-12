@@ -17,6 +17,7 @@ import { LayoutModule } from './pages/layout/layout.module';
 import { IdentityConfigModule } from './pages/identity/config/identity-config.module';
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
 import { CoreModule } from '@abp/ng.core';
+import { TenantManagementConfigModule } from './pages/tenant-management/config/src/tenant-management-config.module';
 registerLocaleData(zh);
 const INSPECTION_TOOLS = [
   NgxsLoggerPluginModule.forRoot({ disabled: true }),
@@ -37,6 +38,7 @@ const INSPECTION_TOOLS = [
     ThemeSharedModule.forRoot(),
     AccountConfigModule.forRoot(),
     IdentityConfigModule.forRoot(),
+    TenantManagementConfigModule.forRoot(),
     LayoutModule,
     NgxsModule.forRoot(),
     ...(environment.production ? [] : INSPECTION_TOOLS),

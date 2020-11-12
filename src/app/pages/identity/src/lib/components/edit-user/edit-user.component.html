@@ -127,28 +127,28 @@
         </nz-form-control>
         <ng-template #passwordErrorTpl let-control>
             <ng-container *ngIf="control.hasError('requireDigit')">
-                <i nz-icon nzType="alert"></i>
-                需要至少一个数字
+                <i nz-icon nzType="warning"></i>
+                {{'AbpIdentity::Volo.Abp.Identity:PasswordRequiresDigit' | abpLocalization}}
             </ng-container>
             <ng-container *ngIf="control.hasError('requireLowercase')">
-                <i nz-icon nzType="alert"></i>
-                需要至少一个小写字母
+                <i nz-icon nzType="warning"></i>
+                {{'AbpIdentity::Volo.Abp.Identity:PasswordRequiresLower' | abpLocalization}}
             </ng-container>
             <ng-container *ngIf="control.hasError('requireUppercase')">
-                <i nz-icon nzType="alert"></i>
-                需要至少一个大写字母
+                <i nz-icon nzType="warning"></i>
+                {{'AbpIdentity::Volo.Abp.Identity:PasswordRequiresUpper' | abpLocalization}}
             </ng-container>
             <ng-container *ngIf="control.hasError('requireNonAlphanumeric')">
-                <i nz-icon nzType="alert"></i>
-                需要至少一个特殊字符
+                <i nz-icon nzType="warning"></i>
+                {{'AbpIdentity::Volo.Abp.Identity:PasswordRequiresNonAlphanumeric' | abpLocalization}}
             </ng-container>
             <ng-container *ngIf="control.hasError('minlength')">
-                <i nz-icon nzType="alert"></i>
-                不满足最小长度要求({{control.errors.minlength.requiredLength}})当前长度({{control.errors.minlength.actualLength}})
+                <i nz-icon nzType="warning"></i>
+                {{'AbpIdentity::Volo.Abp.Identity:PasswordTooShort' | abpLocalization:control.errors['minlength'].requiredLength}}
             </ng-container>
-            <ng-container *ngIf="control.hasError('maxlength')">
-                <i nz-icon nzType="alert"></i>
-                不满足最大长度要求({{control.errors.maxlength.requiredLength}}), 当前长度({{control.errors.maxlength.actualLength}})
+            <ng-container *ngIf="control.hasError('mismatch')">
+                <i nz-icon nzType="warning"></i>
+                {{'AbpIdentity::Volo.Abp.Identity:PasswordConfirmationFailed' | abpLocalization}}
             </ng-container>
         </ng-template>
     </nz-form-item>
@@ -184,7 +184,7 @@
     </nz-form-item>
     <nz-form-item>
         <nz-form-control [nzOffset]="5" [nzSpan]="12">
-            <button nz-button nzType="primary" [nzLoading]="inProgress"
+            <button nz-button nzType="primary" [nzLoading]="modalBusy"
                 [disabled]="form?.invalid">{{ 'AbpIdentity::Save' | abpLocalization }}
             </button>
         </nz-form-control>

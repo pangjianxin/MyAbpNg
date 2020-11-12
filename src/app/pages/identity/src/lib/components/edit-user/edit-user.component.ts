@@ -7,18 +7,17 @@ import { IdentityRoleDto, IdentityUserDto } from '../../proxy/identity';
 import { Store } from '@ngxs/store';
 import { UpdateUser } from '../../actions/identity.actions';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-edit-user',
   templateUrl: './edit-user.component.html',
-  styleUrls: ['./edit-user.component.scss'],
-  providers: []
 })
 export class EditUserComponent implements OnInit {
   @Input() selectedUser: IdentityUserDto;
   @Input() selectedUserRoles: IdentityRoleDto[];
   form: FormGroup;
   assignableRoles: IdentityRoleDto[];
-  inProgress: boolean;
+  modalBusy: boolean;
   constructor(private identityUserService: IdentityUserService,
     private fb: FormBuilder,
     private store: Store, private message: NzMessageService) {
@@ -51,6 +50,7 @@ export class EditUserComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
+    this.modalBusy = true;
     this.store
       .dispatch(
         new UpdateUser({
@@ -58,7 +58,7 @@ export class EditUserComponent implements OnInit {
           ...this.form.value,
           id: this.selectedUser.id,
         })
-      )
+      ).pipe(finalize(() => this.modalBusy = false))
       .subscribe(() => {
         this.message.success('修改客户信息成功');
       });

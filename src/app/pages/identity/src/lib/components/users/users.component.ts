@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { ListService } from '@abp/ng.core';
+import { ListService, LocalizationService } from '@abp/ng.core';
 import {
   DeleteUser, GetUserById, GetUserRoles, GetUsers,
 } from '../../actions/identity.actions';
@@ -32,7 +32,9 @@ export class UsersComponent implements OnInit {
   @Select(IdentityState.getUsersTotalCount) totalCount$: Observable<number>;
 
   selectedUser: IdentityUserDto;
+
   selectedUserRoles: IdentityRoleDto[];
+
   searchMenuVisible: boolean;
 
   searchValue = '';
@@ -49,6 +51,7 @@ export class UsersComponent implements OnInit {
     private identityUserService: IdentityUserService,
     private message: NzMessageService,
     private modal: NzModalService,
+    private local: LocalizationService
   ) {
 
   }
@@ -69,7 +72,14 @@ export class UsersComponent implements OnInit {
   search(): void { }
 
   deleteUser(item: IdentityUserDto): void {
-    this.store.dispatch(new DeleteUser(item.id)).subscribe(() => this.list.get());
+    this.modal.confirm({
+      nzTitle: this.local.instant('AbpIdentity::AreYouSure'),
+      nzContent: this.local.instant('AbpIdentity::UserDeletionConfirmationMessage', item.userName),
+      nzOnOk: () => this.store.dispatch(new DeleteUser(item.id)).subscribe(() => this.list.get()),
+      nzOnCancel: () => this.message.info(this.local.instant('AbpIdentity::Cancel')),
+      nzCancelText: this.local.instant('AbpIdentity::Close'),
+      nzOkText: this.local.instant('AbpIdentity::Submit')
+    });
   }
 
   openModiUserInfoDialog(id: string): void {

@@ -15,7 +15,12 @@ const routes: Routes = [
       {
         path: 'identity',
         loadChildren: () => import('./pages/identity/src/lib/identity.module').then(m => m.IdentityModule.forLazy())
-      }
+      },
+      {
+        path: 'tenant-management',
+        loadChildren: () =>
+          import('./pages/tenant-management/tenant-management.module').then(m => m.TenantManagementModule.forLazy()),
+      },
     ]
   }
 

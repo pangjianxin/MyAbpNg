@@ -10,7 +10,6 @@ export class ManageProfileComponent implements OnInit {
   isProfileLoaded: boolean;
   selectedTab: number;
   hideChangePasswordTab: boolean;
-  isCollapsed = false;
   constructor(private store: Store) { }
 
   ngOnInit(): void {
@@ -23,8 +22,5 @@ export class ManageProfileComponent implements OnInit {
       }
     });
     console.log(this.selectedTab);
-  }
-  toggleCollapsed(): void {
-    this.isCollapsed = !this.isCollapsed;
   }
 }

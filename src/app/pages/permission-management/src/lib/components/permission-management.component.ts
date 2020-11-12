@@ -76,10 +76,6 @@ export class PermissionManagementComponent implements OnInit {
     this.selectedGroup = group;
   }
 
-  permissionGrantedChange(event): void {
-    console.log(event);
-  }
-
   onClickCheckbox(clickedPermission: PermissionGrantInfoDto, value: boolean): void {
     if (clickedPermission.isGranted && this.isGrantedByOtherProviderName(clickedPermission.grantedProviders)) {
       return;
@@ -149,7 +145,6 @@ export class PermissionManagementComponent implements OnInit {
     if (!this.providerKey || !this.providerName) {
       throw new Error('Provider Key and Provider Name are required.');
     }
-    console.log(this.providerName);
     return this.store
       .dispatch(
         new GetPermissions({
@@ -159,6 +154,7 @@ export class PermissionManagementComponent implements OnInit {
       ).pipe(
         pluck('PermissionManagementState', 'permissionRes'),
         tap((permissionRes: GetPermissionListResultDto) => {
+          console.log(permissionRes);
           this.selectedGroup = permissionRes.groups[0];
           this.permissions = getPermissions(permissionRes.groups);
         }),

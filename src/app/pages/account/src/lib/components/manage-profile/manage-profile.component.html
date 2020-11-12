@@ -29,21 +29,15 @@
 </nz-divider>
 <div nz-row nzGutter="24">
     <div nz-col nzFlex>
-        <ul nz-menu nzMode="inline" nzTheme="light" [nzInlineCollapsed]="isCollapsed">
+        <ul nz-menu nzMode="inline" nzTheme="light" nzInlineCollapsed="false">
             <li *ngIf="!hideChangePasswordTab && isProfileLoaded" nz-menu-item nz-tooltip nzTooltipPlacement="right"
-                [nzTooltipTitle]="isCollapsed ? 'Navigation One' : ''" (click)="selectedTab = 0">
+                (click)="selectedTab = 0">
                 <i nz-icon nzType="lock"></i>
                 <span>{{ 'AbpUi::ChangePassword' | abpLocalization }}</span>
             </li>
-            <li nz-menu-item nz-tooltip nzTooltipPlacement="right"
-                [nzTooltipTitle]="isCollapsed ? 'Navigation One' : ''" (click)="selectedTab = 1">
+            <li nz-menu-item nz-tooltip nzTooltipPlacement="right" (click)="selectedTab = 1">
                 <i nz-icon nzType="user"></i>
                 <span>{{ 'AbpAccount::PersonalSettings' | abpLocalization }}</span>
-            </li>
-            <li nz-menu-item nz-tooltip nzTooltipPlacement="right" [nzTooltipTitle]="isCollapsed ? '展开菜单栏' : '收起菜单栏'"
-                (click)="toggleCollapsed()">
-                <i nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
-                <span>收起/展开菜单栏</span>
             </li>
         </ul>
     </div>

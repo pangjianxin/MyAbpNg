@@ -1,1 +1,127 @@
-<p>roles works!</p>
+<nz-page-header class="site-page-header">
+    <!--avatar-->
+    <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
+    <!--title-->
+    <nz-page-header-title>{{'AbpIdentity::Roles' | abpLocalization}}</nz-page-header-title>
+    <!--subtitle-->
+    <nz-page-header-subtitle>
+        <nz-breadcrumb nz-page-header-breadcrumb>
+            <nz-breadcrumb-item>
+                {{'AbpIdentity::Permission:IdentityManagement' | abpLocalization}}
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                {{'AbpIdentity::Roles' | abpLocalization}}
+            </nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </nz-page-header-subtitle>
+    <!--tags-->
+    <nz-page-header-tags>
+        <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
+    </nz-page-header-tags>
+    <!--extra-->
+    <nz-page-header-extra>
+        <nz-space nzDirection="horizontal">
+            <nz-space-item>
+                <button nz-button nzType="primary" nzGhost (click)="refresh()">
+                    <i nz-icon [nzType]="'sync'" [nzSpin]="true"></i>
+                    {{'AbpIdentity::Refresh' | abpLocalization}}
+                </button>
+            </nz-space-item>
+            <nz-space-item>
+                <button nz-button nzType="danger" nzGhost (click)="openCreateRoleDialog()"
+                    *abpPermission="'AbpIdentity.Roles.Create'">
+                    <i nz-icon nzType="user-add"></i>
+                    {{ 'AbpIdentity::NewRole' | abpLocalization }}
+                </button>
+            </nz-space-item>
+        </nz-space>
+    </nz-page-header-extra>
+    <nz-page-header-content>
+
+    </nz-page-header-content>
+</nz-page-header>
+<nz-table #nzTable [nzData]="data$ | async" nzFixed nzShowSizeChanger nzFrontPagination="false" [nzLoading]="loading"
+    [nzTotal]="totalCount$ | async" (nzQueryParams)="onQueryParamsChange($event)" [nzPageSizeOptions]="[5,10,15,20]"
+    nzShowQuickJumper [nzTitle]="tableTitleTpl" [nzFooter]="tableFooterTpl" [(nzPageIndex)]="pageIndex"
+    [(nzPageSize)]="pageSize">
+    <thead>
+        <tr>
+            <th>{{'AbpIdentity::Actions' | abpLocalization}}</th>
+            <th nzColumnKey="name" nzShowSort nzSortFn="true" nzCustomFilter>
+                {{'AbpIdentity::RoleName' | abpLocalization}}
+                <nz-filter-trigger [(nzVisible)]="searchMenuVisible" [nzActive]="searchValue.length > 0"
+                    [nzDropdownMenu]="identifierSearchMenu">
+                    <i nz-icon nzType="search"></i>
+                </nz-filter-trigger>
+                <nz-dropdown-menu #identifierSearchMenu="nzDropdownMenu">
+                    <div class="ant-table-filter-dropdown">
+                        <div class="search-box">
+                            <input type="text" nz-input placeholder="工号模糊搜索..." [(ngModel)]="searchValue" />
+                            <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
+                                搜索
+                            </button>
+                        </div>
+                    </div>
+                </nz-dropdown-menu>
+            </th>
+            <th nzColumnKey="isPublic">{{'AbpIdentity::DisplayName:IsPublic' | abpLocalization}}</th>
+            <th nzColumnKey="isPublic">{{'AbpIdentity::DisplayName:IsDefault' | abpLocalization}}</th>
+            <th nzColumnKey="isPublic">{{'AbpIdentity::DisplayName:IsStatic' | abpLocalization}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of nzTable.data">
+            <td>
+                <button nz-button nzType="primary" nz-dropdown nzTrigger="click" [nzDropdownMenu]="roleActionsMenu">
+                    <i nz-icon nzType="setting"></i>
+                    {{'AbpIdentity::Actions' | abpLocalization}}
+                    <i nz-icon nzType="down"></i>
+                </button>
+                <nz-dropdown-menu #roleActionsMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                        <li nz-menu-item>
+                            <button nz-button nzType="primary" nzBlock nzGhost (click)="openModRoleInfoDialog(data.id)"
+                                *abpPermission="'AbpIdentity.Roles.Update'">
+                                <i nz-icon nzType="edit"></i>
+                                {{ 'AbpIdentity::Edit' | abpLocalization }}
+                            </button>
+                        </li>
+                        <li nz-menu-item>
+                            <button nz-button nzDanger nzBlock nzGhost (click)="deleteRole(data.id,data.name)"
+                                *ngIf="!data.isStatic" [abpPermission]="'AbpIdentity.Roles.Delete'">
+                                <i nz-icon nzType="delete"></i>
+                                {{ 'AbpIdentity::Delete' | abpLocalization }}
+                            </button>
+                        </li>
+                        <li nz-menu-item>
+                            <button nz-button nzDanger nzBlock nzGhost (click)="openRolePermissionDialog(data.name)"
+                                *abpPermission="'AbpIdentity.Roles.ManagePermissions'">
+                                <i nz-icon nzType="setting"></i>
+                                {{ 'AbpIdentity::Permissions' | abpLocalization }}
+                            </button>
+                        </li>
+
+                    </ul>
+                </nz-dropdown-menu>
+            </td>
+            <td>{{ data.name }}</td>
+            <td>
+                <nz-tag [nzColor]="data.isPublic?'success':'error'"> {{ data.isPublic }}</nz-tag>
+            </td>
+            <td>
+                <nz-tag [nzColor]="data.isDefault?'success':'error'">{{ data.isDefault }}</nz-tag>
+            </td>
+            <td>
+                <nz-tag [nzColor]="data.isStatic?'success':'error'">{{ data.isStatic }}</nz-tag>
+            </td>
+        </tr>
+    </tbody>
+</nz-table>
+<ng-template #tableTitleTpl>
+
+</ng-template>
+<ng-template #tableFooterTpl>
+    <nz-tag [nzColor]="'magenta'">总数<i nz-icon nzType="number"></i>{{totalCount$ | async}}</nz-tag>
+    <nz-tag [nzColor]="'magenta'">当前页<i nz-icon nzType="number"></i>{{pageIndex}}</nz-tag>
+    <nz-tag [nzColor]="'magenta'">每页<i nz-icon nzType="number"></i>{{pageSize}}</nz-tag>
+</ng-template>

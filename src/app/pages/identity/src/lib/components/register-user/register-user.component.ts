@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { finalize } from 'rxjs/operators';
 import snq from 'snq';
 import { getPasswordValidators } from 'src/app/pages/theme-shared/uitls/validation.utils';
 import { CreateUser } from '../../actions/identity.actions';
@@ -14,7 +15,7 @@ import { IdentityRoleDto, IdentityUserService } from '../../proxy/identity';
 export class RegisterUserComponent implements OnInit {
   form: FormGroup;
   assignableRoles: IdentityRoleDto[];
-  inProgress: boolean;
+  modalBusy: boolean;
   constructor(private identityUserService: IdentityUserService,
     private fb: FormBuilder,
     private store: Store, private message: NzMessageService) {
@@ -43,13 +44,10 @@ export class RegisterUserComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
-    console.log(this.form.value);
+    this.modalBusy = true;
     this.store
-      .dispatch(
-        new CreateUser({
-          ...this.form.value,
-        })
-      )
+      .dispatch(new CreateUser({ ...this.form.value }))
+      .pipe(finalize(() => this.modalBusy = false))
       .subscribe(() => {
         this.message.success('创建客户成功');
       });

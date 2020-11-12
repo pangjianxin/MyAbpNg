@@ -1,28 +1,40 @@
 <nz-page-header class="site-page-header">
-    <!--breadcrumb-->
-    <nz-breadcrumb nz-page-header-breadcrumb>
-        <nz-breadcrumb-item>主页</nz-breadcrumb-item>
-        <nz-breadcrumb-item>
-            <a>用户</a>
-        </nz-breadcrumb-item>
-        <nz-breadcrumb-item>列表</nz-breadcrumb-item>
-    </nz-breadcrumb>
     <!--avatar-->
     <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
     <!--title-->
-    <nz-page-header-title>用户列表</nz-page-header-title>
+    <nz-page-header-title>
+        {{'AbpIdentity::Users' | abpLocalization}}
+    </nz-page-header-title>
     <!--subtitle-->
-    <nz-page-header-subtitle>显示当前系统存储所有用户</nz-page-header-subtitle>
+    <nz-page-header-subtitle>
+        <nz-breadcrumb>
+            <nz-breadcrumb-item>{{'AbpIdentity::Permission:IdentityManagement' | abpLocalization}}</nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                <a>{{'AbpIdentity::Users' | abpLocalization}}</a>
+            </nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </nz-page-header-subtitle>
     <!--tags-->
     <nz-page-header-tags>
         <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
     </nz-page-header-tags>
-    <!--extra-->
     <nz-page-header-extra>
+        <nz-space nzDirection="horizontal">
+            <nz-space-item>
+                <button nz-button nzType="primary" nzGhost (click)="refresh()">
+                    <i nz-icon [nzType]="'sync'" [nzSpin]="true"></i>
+                    {{'AbpIdentity::Refresh' | abpLocalization}}
+                </button>
+            </nz-space-item>
+            <nz-space-item>
+                <button nz-button nzType="danger" nzGhost (click)="openRegisterUserDialog()"
+                    *abpPermission="'AbpIdentity.Users.Create'">
+                    <i nz-icon nzType="user-add"></i>
+                    {{'AbpIdentity::NewUser' | abpLocalization}}
+                </button>
+            </nz-space-item>
+        </nz-space>
     </nz-page-header-extra>
-    <nz-page-header-content>
-
-    </nz-page-header-content>
 </nz-page-header>
 <nz-table #nzTable [nzData]="data$ | async" nzFixed nzShowSizeChanger nzFrontPagination="false" [nzLoading]="loading"
     [nzTotal]="totalCount$ | async" (nzQueryParams)="onQueryParamsChange($event)" [nzPageSizeOptions]="[5,10,15,20]"
@@ -30,6 +42,7 @@
     [(nzPageSize)]="pageSize">
     <thead>
         <tr>
+            <th>{{'AbpIdentity::Actions' | abpLocalization}}</th>
             <th nzColumnKey="userName" nzShowSort nzSortFn="true" nzCustomFilter>
                 {{'AbpIdentity::UserName' | abpLocalization}}
                 <nz-filter-trigger [(nzVisible)]="searchMenuVisible" [nzActive]="searchValue.length > 0"
@@ -57,58 +70,54 @@
                 {{ 'AbpIdentity::DisplayName:PhoneNumber' | abpLocalization }}
             </th>
             <th nzColumnKey="email" nzWidth="200px">{{'AbpIdentity::EmailAddress' | abpLocalization}}</th>
-            <th>{{'AbpIdentity::Actions' | abpLocalization}}</th>
+
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let data of nzTable.data">
+            <td>
+                <button nz-button nzType="primary" nz-dropdown nzTrigger="click" [nzDropdownMenu]="roleActionsMenu">
+                    <i nz-icon nzType="setting"></i>
+                    {{'AbpIdentity::Actions' | abpLocalization}}
+                    <i nz-icon nzType="down"></i>
+                </button>
+                <nz-dropdown-menu #roleActionsMenu="nzDropdownMenu">
+                    <ul nz-menu>
+                        <li nz-menu-item>
+                            <button nz-button nzType="primary" nzGhost (click)="openModiUserInfoDialog(data.id)"
+                                *abpPermission="'AbpIdentity.Users.Update'">
+                                <i nz-icon nzType="edit"></i>
+                                {{'AbpIdentity::Edit' | abpLocalization}}
+                            </button>
+                        </li>
+                        <li nz-menu-item>
+                            <button nz-button nzDanger nzGhost (click)="openUserPermissionDialog(data.id)"
+                                *abpPermission="'AbpIdentity.Users.ManagePermissions'">
+                                <i nz-icon nzType="setting"></i>
+                                {{'AbpIdentity::Permissions' | abpLocalization}}
+                            </button>
+                        </li>
+                        <li nz-menu-item>
+                            <button nz-button (click)="deleteUser(data)" nzDanger nzGhost
+                                *abpPermission="'AbpIdentity.Users.Delete'">
+                                <i nz-icon nzType="delete"></i>
+                                {{'AbpIdentity::Delete' | abpLocalization}}
+                            </button>
+                        </li>
+
+                    </ul>
+                </nz-dropdown-menu>
+            </td>
             <td>{{ data.userName }}</td>
             <td>{{ data.name }}</td>
             <td>{{ data.surname }}</td>
             <td>{{ data.phoneNumber }}</td>
             <td>{{ data.email }}</td>
-            <td>
-                <nz-space nzDirection="horizontal">
-                    <nz-space-item>
-                        <button nz-button nzType="primary" (click)="openModiUserInfoDialog(data.id)">
-                            <i nz-icon nzType="edit"></i>
-                            编辑
-                        </button>
-                    </nz-space-item>
-                    <nz-space-item>
-                        <button nz-button nz-col nzType="delete" nz-popconfirm
-                            [nzPopconfirmTitle]="'AbpIdentity::UserDeletionConfirmationMessage' | abpLocalization"
-                            (nzOnConfirm)="deleteUser(data)" (nzOnCancel)="cancel()">
-                            <i nz-icon nzType="delete"></i>
-                            删除
-                        </button>
-                    </nz-space-item>
-                    <nz-space-item>
-                        <button nz-button nz-col nzType="danger" nzGhost (click)="openUserPermissionDialog(data.id)">
-                            <i nz-icon nzType="setting"></i>
-                            权限
-                        </button>
-                    </nz-space-item>
-                </nz-space>
-            </td>
         </tr>
     </tbody>
 </nz-table>
 <ng-template #tableTitleTpl>
-    <nz-space nzDirection="horizontal">
-        <nz-space-item>
-            <button nz-button nzType="primary" nzGhost (click)="refresh()">
-                <i nz-icon [nzType]="'sync'" [nzSpin]="true"></i>
-                刷新
-            </button>
-        </nz-space-item>
-        <nz-space-item>
-            <button nz-button nzType="danger" nzGhost (click)="openRegisterUserDialog()">
-                <i nz-icon nzType="user-add"></i>
-                新建
-            </button>
-        </nz-space-item>
-    </nz-space>
+
 </ng-template>
 <ng-template #tableFooterTpl>
     <nz-tag [nzColor]="'magenta'">总数<i nz-icon nzType="number"></i>{{totalCount$ | async}}</nz-tag>

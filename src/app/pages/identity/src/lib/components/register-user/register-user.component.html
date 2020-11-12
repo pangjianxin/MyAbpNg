@@ -1,29 +1,26 @@
 <nz-page-header class="site-page-header">
-    <!--breadcrumb-->
-    <nz-breadcrumb nz-page-header-breadcrumb>
-        <nz-breadcrumb-item>主页</nz-breadcrumb-item>
-        <nz-breadcrumb-item>
-            <a>用户</a>
-        </nz-breadcrumb-item>
-        <nz-breadcrumb-item>创建</nz-breadcrumb-item>
-    </nz-breadcrumb>
     <!--avatar-->
     <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
     <!--title-->
-    <nz-page-header-title>创建用户</nz-page-header-title>
+    <nz-page-header-title>{{'AbpIdentity::Users' | abpLocalization}}</nz-page-header-title>
     <!--subtitle-->
-    <nz-page-header-subtitle>创建一个系统用户</nz-page-header-subtitle>
+    <nz-page-header-subtitle>
+        <nz-breadcrumb nz-page-header-breadcrumb>
+            <nz-breadcrumb-item>
+                {{'AbpIdentity::Permission:IdentityManagement' | abpLocalization}}
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                {{'AbpIdentity::Users' | abpLocalization}}
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                {{'AbpIdentity::Register' | abpLocalization}}
+            </nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </nz-page-header-subtitle>
     <!--tags-->
     <nz-page-header-tags>
         <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
     </nz-page-header-tags>
-    <!--extra-->
-    <nz-page-header-extra>
-    </nz-page-header-extra>
-    <nz-page-header-content>
-        <i nz-icon nzType="info-circle"></i>
-        前面有星号(*)的表示为必输项
-    </nz-page-header-content>
 </nz-page-header>
 <nz-divider nzOrientation="left" [nzText]="nzText">
     <ng-template #nzText>
@@ -184,7 +181,7 @@
     </nz-form-item>
     <nz-form-item>
         <nz-form-control [nzOffset]="5" [nzSpan]="12">
-            <button nz-button nzType="primary" [nzLoading]="inProgress"
+            <button nz-button nzType="primary" [nzLoading]="modalBusy"
                 [disabled]="form?.invalid">{{ 'AbpIdentity::Save' | abpLocalization }}
             </button>
         </nz-form-control>

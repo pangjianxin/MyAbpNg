@@ -1,0 +1,79 @@
+<nz-page-header class="site-page-header">
+    <!--breadcrumb-->
+    <nz-breadcrumb nz-page-header-breadcrumb>
+        <nz-breadcrumb-item>主页</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+            <a>角色</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>创建</nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <!--avatar-->
+    <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
+    <!--title-->
+    <nz-page-header-title>创建角色</nz-page-header-title>
+    <!--subtitle-->
+    <nz-page-header-subtitle>创建一个系统角色</nz-page-header-subtitle>
+    <!--tags-->
+    <nz-page-header-tags>
+        <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
+    </nz-page-header-tags>
+    <!--extra-->
+    <nz-page-header-extra>
+    </nz-page-header-extra>
+    <nz-page-header-content>
+        <i nz-icon nzType="info-circle"></i>
+        前面有星号(*)的表示为必输项
+    </nz-page-header-content>
+</nz-page-header>
+<nz-divider nzOrientation="left" [nzText]="nzText">
+    <ng-template #nzText>
+        <i nz-icon nzType="edit"></i>
+        表单
+    </ng-template>
+</nz-divider>
+<form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="submit()">
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="key"></i>
+            {{ 'AbpIdentity::RoleName' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" [nzErrorTip]="roleNameErrorTpl">
+            <input type="text" nz-input formControlName="name">
+        </nz-form-control>
+        <ng-template #roleNameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+                <i nz-icon nzType="alert"></i>
+                该项必输
+            </ng-container>
+        </ng-template>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">
+            <i nz-icon nzType="profile"></i>
+            {{ 'AbpIdentity::DisplayName:IsDefault' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control>
+            <label nz-checkbox formControlName="isDefault">
+                {{ 'AbpIdentity::DisplayName:IsDefault' | abpLocalization }}
+            </label>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5">
+            <i nz-icon nzType="profile"></i>
+            {{ 'AbpIdentity::DisplayName:IsPublic' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control>
+            <label nz-checkbox formControlName="isPublic">
+                {{ 'AbpIdentity::DisplayName:IsPublic' | abpLocalization}}
+            </label>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+        <nz-form-control [nzOffset]="5" [nzSpan]="12">
+            <button nz-button nzType="primary" [nzLoading]="modalBusy"
+                [disabled]="form?.invalid">{{ 'AbpIdentity::Save' | abpLocalization }}
+            </button>
+        </nz-form-control>
+    </nz-form-item>
+</form>

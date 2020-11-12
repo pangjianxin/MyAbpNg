@@ -1,0 +1,110 @@
+<nz-page-header class="site-page-header">
+  <!--avatar-->
+  <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
+  <!--title-->
+  <nz-page-header-title>
+    {{'AbpTenantManagement::Tenants' | abpLocalization}}
+  </nz-page-header-title>
+  <!--subtitle-->
+  <nz-page-header-subtitle>
+    <nz-breadcrumb>
+      <nz-breadcrumb-item> {{'AbpTenantManagement::Permission:TenantManagement' | abpLocalization}}</nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        {{'AbpTenantManagement::Tenants' | abpLocalization}}
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+  </nz-page-header-subtitle>
+  <!--tags-->
+  <nz-page-header-tags>
+    <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
+  </nz-page-header-tags>
+  <nz-page-header-extra>
+    <nz-space nzDirection="horizontal">
+      <nz-space-item>
+        <button nz-button nzType="primary" nzGhost (click)="refresh()">
+          <i nz-icon [nzType]="'sync'" [nzSpin]="true"></i>
+          {{'AbpTenantManagement::Refresh' | abpLocalization}}
+        </button>
+      </nz-space-item>
+      <nz-space-item>
+        <button nz-button nzType="danger" nzGhost (click)="addTenant()"
+          *abpPermission="'AbpTenantManagement.Tenants.Create'">
+          <i nz-icon nzType="home"></i>
+          {{'AbpTenantManagement::NewTenant' | abpLocalization}}
+        </button>
+      </nz-space-item>
+    </nz-space>
+  </nz-page-header-extra>
+</nz-page-header>
+<nz-table #nzTable [nzData]="data$ | async" nzFixed nzShowSizeChanger nzFrontPagination="false" [nzLoading]="loading"
+  [nzTotal]="totalCount$ | async" (nzQueryParams)="onQueryParamsChange($event)" [nzPageSizeOptions]="[5,10,15,20]"
+  nzShowQuickJumper [nzTitle]="tableTitleTpl" [nzFooter]="tableFooterTpl" [(nzPageIndex)]="pageIndex"
+  [(nzPageSize)]="pageSize">
+  <thead>
+    <tr>
+      <th>{{ 'AbpTenantManagement::Actions' | abpLocalization }}</th>
+      <th nzColumnKey="name" nzShowSort nzSortFn="true" nzCustomFilter>
+        {{'AbpTenantManagement::TenantName' | abpLocalization}}
+        <nz-filter-trigger [(nzVisible)]="searchMenuVisible" [nzActive]="searchValue.length > 0"
+          [nzDropdownMenu]="identifierSearchMenu">
+          <i nz-icon nzType="search"></i>
+        </nz-filter-trigger>
+        <nz-dropdown-menu #identifierSearchMenu="nzDropdownMenu">
+          <div class="ant-table-filter-dropdown">
+            <div class="search-box">
+              <input type="text" nz-input placeholder="工号模糊搜索..." [(ngModel)]="searchValue" />
+              <button nz-button nzSize="small" nzType="primary" (click)="search()" class="search-button">
+                搜索
+              </button>
+            </div>
+          </div>
+        </nz-dropdown-menu>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of nzTable.data">
+      <td>
+        <button nz-button nzType="primary" nz-dropdown nzTrigger="click" [nzDropdownMenu]="tenantActionsMenu">
+          <i nz-icon nzType="setting"></i>
+          {{'AbpIdentity::Actions' | abpLocalization}}
+          <i nz-icon nzType="down"></i>
+        </button>
+        <nz-dropdown-menu #tenantActionsMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item>
+              <button nz-button nzType="danger" nzBlock nzGhost (click)="editTenant(data.id)"
+                *abpPermission="'AbpTenantManagement.Tenants.Update'">
+                <i nz-icon nzType="edit"></i>
+                {{'AbpTenantManagement::Edit' | abpLocalization}}
+              </button>
+            </li>
+            <li nz-menu-item>
+              <button nz-button nzType="danger" nzBlock nzGhost (click)="editConnectionString(data.id)"
+                *abpPermission="'AbpTenantManagement.Tenants.ManageConnectionStrings'">
+                <i nz-icon nzType="setting"></i>
+                {{ 'AbpTenantManagement::Permission:ManageConnectionStrings' | abpLocalization }}
+              </button>
+            </li>
+            <li nz-menu-item>
+              <button nz-button nzType="danger" nzBlock nzGhost (click)="deleteTenant(data.id,data.name)"
+                *abpPermission="'AbpTenantManagement.Tenants.Delete'">
+                <i nz-icon nzType="delete"></i>
+                {{ 'AbpTenantManagement::Delete' | abpLocalization }}
+              </button>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </td>
+      <td>{{ data.name }}</td>
+    </tr>
+  </tbody>
+</nz-table>
+<ng-template #tableTitleTpl>
+
+</ng-template>
+<ng-template #tableFooterTpl>
+  <nz-tag [nzColor]="'magenta'">总数<i nz-icon nzType="number"></i>{{totalCount$ | async}}</nz-tag>
+  <nz-tag [nzColor]="'magenta'">当前页<i nz-icon nzType="number"></i>{{pageIndex}}</nz-tag>
+  <nz-tag [nzColor]="'magenta'">每页<i nz-icon nzType="number"></i>{{pageSize}}</nz-tag>
+</ng-template>
