@@ -12,7 +12,7 @@ export function configureRoutes(routes: RoutesService): () => void {
     return () => {
         routes.add([
             {
-                path: '/main/identity',
+                path: '/identity',
                 name: eIdentityRouteNames.IdentityManagement,
                 parentName: eThemeSharedRouteNames.Administration,
                 requiredPolicy: eIdentityPolicyNames.IdentityManagement,
@@ -21,7 +21,7 @@ export function configureRoutes(routes: RoutesService): () => void {
                 order: 1,
             },
             {
-                path: '/main/identity/roles',
+                path: '/identity/roles',
                 name: eIdentityRouteNames.Roles,
                 parentName: eIdentityRouteNames.IdentityManagement,
                 requiredPolicy: eIdentityPolicyNames.Roles,
@@ -29,7 +29,7 @@ export function configureRoutes(routes: RoutesService): () => void {
                 order: 1,
             },
             {
-                path: '/main/identity/users',
+                path: '/identity/users',
                 name: eIdentityRouteNames.Users,
                 parentName: eIdentityRouteNames.IdentityManagement,
                 requiredPolicy: eIdentityPolicyNames.Users,

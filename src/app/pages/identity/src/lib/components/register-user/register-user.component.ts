@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ListService } from '@abp/ng.core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -13,6 +14,7 @@ import { IdentityRoleDto, IdentityUserService } from '../../proxy/identity';
   templateUrl: './register-user.component.html',
 })
 export class RegisterUserComponent implements OnInit {
+  @Input() list: ListService;
   form: FormGroup;
   assignableRoles: IdentityRoleDto[];
   modalBusy: boolean;
@@ -49,6 +51,7 @@ export class RegisterUserComponent implements OnInit {
       .dispatch(new CreateUser({ ...this.form.value }))
       .pipe(finalize(() => this.modalBusy = false))
       .subscribe(() => {
+        this.list.get();
         this.message.success('创建客户成功');
       });
   }

@@ -14,7 +14,7 @@ function configureRoutes(routes: RoutesService): () => void {
   return () => {
     routes.add([
       {
-        path: '/main',
+        path: '',
         name: '::Menu:Home',
         iconClass: 'home',
         order: 1,

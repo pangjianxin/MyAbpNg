@@ -73,21 +73,21 @@
         <nz-dropdown-menu #tenantActionsMenu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item>
-              <button nz-button nzType="danger" nzBlock nzGhost (click)="editTenant(data.id)"
+              <button nz-button nzType="primary" nzBlock nzGhost (click)="editTenant(data.id)"
                 *abpPermission="'AbpTenantManagement.Tenants.Update'">
                 <i nz-icon nzType="edit"></i>
                 {{'AbpTenantManagement::Edit' | abpLocalization}}
               </button>
             </li>
             <li nz-menu-item>
-              <button nz-button nzType="danger" nzBlock nzGhost (click)="editConnectionString(data.id)"
+              <button nz-button nzBlock nzGhost (click)="editConnectionString(data.id)"
                 *abpPermission="'AbpTenantManagement.Tenants.ManageConnectionStrings'">
                 <i nz-icon nzType="setting"></i>
                 {{ 'AbpTenantManagement::Permission:ManageConnectionStrings' | abpLocalization }}
               </button>
             </li>
             <li nz-menu-item>
-              <button nz-button nzType="danger" nzBlock nzGhost (click)="deleteTenant(data.id,data.name)"
+              <button nz-button nzBlock nzGhost (click)="deleteTenant(data.id,data.name)"
                 *abpPermission="'AbpTenantManagement.Tenants.Delete'">
                 <i nz-icon nzType="delete"></i>
                 {{ 'AbpTenantManagement::Delete' | abpLocalization }}

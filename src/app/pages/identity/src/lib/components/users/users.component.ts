@@ -27,6 +27,7 @@ import { PermissionManagementComponent } from 'src/app/pages/permission-manageme
   providers: [ListService],
 })
 export class UsersComponent implements OnInit {
+
   @Select(IdentityState.getUsers) data$: Observable<IdentityUserDto[]>;
 
   @Select(IdentityState.getUsersTotalCount) totalCount$: Observable<number>;
@@ -48,7 +49,6 @@ export class UsersComponent implements OnInit {
   constructor(
     public readonly list: ListService<GetIdentityUsersInput>,
     private store: Store,
-    private identityUserService: IdentityUserService,
     private message: NzMessageService,
     private modal: NzModalService,
     private local: LocalizationService
@@ -96,7 +96,8 @@ export class UsersComponent implements OnInit {
           nzFooter: [],
           nzComponentParams: {
             selectedUser: this.selectedUser,
-            selectedUserRoles: this.selectedUserRoles || []
+            selectedUserRoles: this.selectedUserRoles || [],
+            list: this.list
           },
           nzWidth: '60%'
         });
@@ -107,6 +108,9 @@ export class UsersComponent implements OnInit {
     this.modal.create({
       nzTitle: '创建用户',
       nzContent: RegisterUserComponent,
+      nzComponentParams: {
+        list: this.list
+      },
       nzFooter: [],
       nzWidth: '60%'
     });

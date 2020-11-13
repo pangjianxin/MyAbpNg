@@ -1,5 +1,4 @@
 <nz-layout class="app-layout">
-
     <!-- <nz-sider class="menu-sidebar" nzCollapsible nzWidth="256px" nzBreakpoint="md">
         <div class="sidebar-logo">
             <a href="https://ng.ant.design/" target="_blank">
@@ -35,22 +34,26 @@
             </a>
         </div>
         <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-            <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: appRoutes$ | async }"></ng-container>
+            <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: appRoutes$ }"></ng-container>
             <ng-template #menuTpl let-routes>
                 <ng-container *ngFor="let menu of routes">
-                    <!-- 叶子节点 -->
-                    <li *ngIf="menu.isLeaf" nz-menu-item [nzDisabled]="menu.invisible" [routerLink]="menu.path">
-                        <i nz-icon [nzType]="menu.iconClass" *ngIf="menu.iconClass"></i>
-                        <span>{{ menu.name | abpLocalization }}</span>
-                    </li>
-                    <!-- 父节点 -->
-                    <li *ngIf="!menu.isLeaf" nz-submenu [nzTitle]="menu.name | abpLocalization"
-                        [nzIcon]="menu.iconClass" [nzDisabled]="menu.invisible">
-                        <ul>
-                            <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menu.children }">
-                            </ng-container>
-                        </ul>
-                    </li>
+                    <ng-template [abpPermission]="menu.requiredPolicy">
+                        <!-- 子节点 -->
+                        <li *ngIf="menu.isLeaf" nz-menu-item [nzDisabled]="menu.invisible" [routerLink]="menu.path"
+                            [nzPaddingLeft]="getParentCount(menu)">
+                            <i nz-icon [nzType]="menu.iconClass" *ngIf="menu.iconClass"></i>
+                            <span>{{ menu.name | abpLocalization }}</span>
+                        </li>
+                        <!-- 父节点 -->
+                        <li *ngIf="!menu.isLeaf" nz-submenu [nzTitle]="menu.name | abpLocalization"
+                            [nzIcon]="menu.iconClass" [nzDisabled]="menu.invisible"
+                            [nzPaddingLeft]="getParentCount(menu)">
+                            <ul>
+                                <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menu.children }">
+                                </ng-container>
+                            </ul>
+                        </li>
+                    </ng-template>
                 </ng-container>
             </ng-template>
         </ul>

@@ -12,16 +12,16 @@ export function configureRoutes(routes: RoutesService): () => void {
   return () => {
     routes.add([
       {
-        path: '/main/tenant-management',
+        path: '/tenant-management',
         name: eTenantManagementRouteNames.TenantManagement,
         parentName: eThemeSharedRouteNames.Administration,
         requiredPolicy: eTenantManagementPolicyNames.TenantManagement,
         layout: eLayoutType.application,
-        iconClass: 'audit',
+        iconClass: 'cloud-server',
         order: 2,
       },
       {
-        path: '/main/tenant-management/tenants',
+        path: '/tenant-management/tenants',
         name: eTenantManagementRouteNames.Tenants,
         parentName: eTenantManagementRouteNames.TenantManagement,
         requiredPolicy: eTenantManagementPolicyNames.Tenants,

@@ -1,13 +1,23 @@
+import { AuthGuard } from '@abp/ng.core';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { LayoutMainComponent } from './pages/layout/layout-main/layout-main.component';
-import { LayoutComponent } from './pages/layout/layout/layout.component';
+import { LayoutMainComponent } from './pages/layout/src/lib/components/layout-main/layout-main.component';
+import { WelcomeComponent } from './pages/layout/src/lib/components/welcome/welcome.component';
 
 const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: '/welcome' },
-  { path: 'welcome', component: LayoutComponent },
   {
-    path: 'main', component: LayoutMainComponent, children: [
+    path: '',
+    component: LayoutMainComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: '/welcome'
+      },
+      {
+        path: 'welcome',
+        component: WelcomeComponent
+      },
       {
         path: 'account',
         loadChildren: () => import('./pages/account/src/lib/account.module').then(m => m.AccountModule.forLazy({ redirectUrl: '/' }))
@@ -23,7 +33,6 @@ const routes: Routes = [
       },
     ]
   }
-
 ];
 
 @NgModule({

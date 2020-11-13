@@ -10,20 +10,20 @@ export function configureRoutes(routes: RoutesService): () => void {
     return () => {
         routes.add([
             {
-                path: '/main/account',
+                path: '/account',
                 name: eAccountRouteNames.Account,
                 invisible: true,
                 layout: eLayoutType.application,
                 order: 1,
             },
             {
-                path: '/main/account/register',
+                path: '/account/register',
                 name: eAccountRouteNames.Register,
                 parentName: eAccountRouteNames.Account,
                 order: 2,
             },
             {
-                path: '/main/account/manage-profile',
+                path: '/account/manage-profile',
                 name: eAccountRouteNames.ManageProfile,
                 parentName: eAccountRouteNames.Account,
                 order: 3,

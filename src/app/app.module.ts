@@ -13,7 +13,7 @@ import { ThemeSharedModule } from './pages/theme-shared/theme-shared.module';
 import { APP_ROUTE_PROVIDER } from './route.provider';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { AccountConfigModule } from './pages/account/config/account-config.module';
-import { LayoutModule } from './pages/layout/layout.module';
+import { LayoutModule } from './pages/layout/src/lib/layout.module';
 import { IdentityConfigModule } from './pages/identity/config/identity-config.module';
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n';
 import { CoreModule } from '@abp/ng.core';

@@ -7,25 +7,20 @@ import { UsersComponent } from './components/users/users.component';
 const routes: Routes = [
   { path: '', redirectTo: 'roles', pathMatch: 'full' },
   {
-    path: '',
-    component: RouterOutletComponent,
+    path: 'roles',
+    component: RolesComponent,
     canActivate: [AuthGuard, PermissionGuard],
-    children: [
-      {
-        path: 'roles',
-        component: RolesComponent,
-        data: {
-          requiredPolicy: 'AbpIdentity.Roles',
-        }
-      },
-      {
-        path: 'users',
-        component: UsersComponent,
-        data: {
-          requiredPolicy: 'AbpIdentity.Users',
-        }
-      },
-    ],
+    data: {
+      requiredPolicy: 'AbpIdentity.Roles',
+    }
+  },
+  {
+    path: 'users',
+    component: UsersComponent,
+    canActivate: [AuthGuard, PermissionGuard],
+    data: {
+      requiredPolicy: 'AbpIdentity.Users',
+    }
   },
 ];
 

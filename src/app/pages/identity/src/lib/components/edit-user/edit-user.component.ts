@@ -8,6 +8,7 @@ import { Store } from '@ngxs/store';
 import { UpdateUser } from '../../actions/identity.actions';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { finalize } from 'rxjs/operators';
+import { ListService } from '@abp/ng.core';
 @Component({
   selector: 'app-edit-user',
   templateUrl: './edit-user.component.html',
@@ -15,6 +16,7 @@ import { finalize } from 'rxjs/operators';
 export class EditUserComponent implements OnInit {
   @Input() selectedUser: IdentityUserDto;
   @Input() selectedUserRoles: IdentityRoleDto[];
+  @Input() list: ListService;
   form: FormGroup;
   assignableRoles: IdentityRoleDto[];
   modalBusy: boolean;
@@ -60,6 +62,7 @@ export class EditUserComponent implements OnInit {
         })
       ).pipe(finalize(() => this.modalBusy = false))
       .subscribe(() => {
+        this.list.get();
         this.message.success('修改客户信息成功');
       });
   }
