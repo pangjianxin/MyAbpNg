@@ -95,3 +95,30 @@ export interface UserLookupCountInputDto {
 export interface UserLookupSearchInputDto extends PagedAndSortedResultRequestDto {
   filter: string;
 }
+
+export class GetOrganizationUnitsInput extends PagedAndSortedResultRequestDto {
+  filter: string;
+}
+
+export interface OrganizationUnitCreateDto extends ExtensibleObject {
+  displayName: string;
+  parentId?: string;
+}
+
+export interface OrganizationUnitDto extends ExtensibleFullAuditedEntityDto<string> {
+  tenantId?: string;
+  parentId?: string;
+  code: string;
+  displayName: string;
+  orgIdentifier: string;
+  concurrencyStamp: string;
+}
+
+export interface OrganizationUnitUpdateDto extends ExtensibleObject {
+  tenantId?: string;
+  parentId?: string;
+  code: string;
+  displayName: string;
+  concurrencyStamp: string;
+}
+

@@ -1,0 +1,72 @@
+<nz-page-header class="site-page-header">
+    <!--avatar-->
+    <nz-avatar nz-page-header-avatar nzSrc="assets/imgs/logo.svg"></nz-avatar>
+    <!--title-->
+    <nz-page-header-title>{{'::OrganizationUnits' | abpLocalization}}</nz-page-header-title>
+    <!--subtitle-->
+    <nz-page-header-subtitle>
+        <nz-breadcrumb nz-page-header-breadcrumb>
+            <nz-breadcrumb-item>
+                {{'::OrganizationUnits' | abpLocalization}}
+            </nz-breadcrumb-item>
+            <nz-breadcrumb-item>
+                {{'::NewOU' | abpLocalization}}
+            </nz-breadcrumb-item>
+        </nz-breadcrumb>
+    </nz-page-header-subtitle>
+    <!--tags-->
+    <nz-page-header-tags>
+        <nz-tag [nzColor]="'blue'">管理员权限</nz-tag>
+    </nz-page-header-tags>
+    <nz-page-header-content>
+        111
+    </nz-page-header-content>
+</nz-page-header>
+<nz-divider nzOrientation="left" [nzText]="nzText">
+    <ng-template #nzText>
+        <i nz-icon nzType="edit"></i>
+        表单
+    </ng-template>
+</nz-divider>
+<form *ngIf="form" nz-form [formGroup]="form" (ngSubmit)="submit()">
+    <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="user"></i>
+            {{ '::DisplayName:DisplayName' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" [nzErrorTip]="userNameErrorTpl">
+            <input type="text" formControlName="displayName" nz-input
+                [placeholder]="'::DisplayName:DisplayName' | abpLocalization">
+        </nz-form-control>
+        <ng-template #userNameErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('maxlength')">
+                <i nz-icon nzType="alert"></i>
+                该项允许的最大长度为{{control.errors.maxlength.requiredLength}}, 实际长度为{{control.errors.maxlength.actualLength}}
+            </ng-container>
+        </ng-template>
+    </nz-form-item>
+    <nz-form-item formGroupName="extraProperties">
+        <nz-form-label [nzSpan]="5" nzRequired>
+            <i nz-icon nzType="user"></i>
+            {{ '::DisplayName:OUIdentifier' | abpLocalization }}
+        </nz-form-label>
+        <nz-form-control [nzSpan]="18" [nzErrorTip]="userName1ErrorTpl">
+            <input type="text" formControlName="Identifier" nz-input
+                [placeholder]="'::DisplayName:OUIdentifier' | abpLocalization">
+        </nz-form-control>
+        <ng-template #userName1ErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+                <i nz-icon nzType="alert"></i>
+                该项允许的最大长度为{{control.errors.maxlength.requiredLength}}, 实际长度为{{control.errors.maxlength.actualLength}}
+            </ng-container>
+        </ng-template>
+    </nz-form-item>
+
+    <nz-form-item>
+        <nz-form-control [nzOffset]="5" [nzSpan]="12">
+            <button nz-button nzType="primary" [nzLoading]="modalBusy"
+                [disabled]="form?.invalid">{{ 'AbpIdentity::Save' | abpLocalization }}
+            </button>
+        </nz-form-control>
+    </nz-form-item>
+</form>

@@ -1,7 +1,7 @@
 import { Config } from '@abp/ng.core';
 
 
-const baseUrl = 'http://localhost:4201';
+const baseUrl = 'http://localhost:4200';
 
 export const environment: Config.Environment = {
   production: false,
@@ -11,15 +11,15 @@ export const environment: Config.Environment = {
     logoUrl: '',
   },
   oAuthConfig: {
-    issuer: 'https://localhost:44384',
+    issuer: 'https://localhost:44328',
     redirectUri: baseUrl,
-    clientId: 'Lbfl_App2',
+    clientId: 'Lbfl_App',
     responseType: 'code',
     scope: 'offline_access Lbfl',
   },
   apis: {
     default: {
-      url: 'https://localhost:44384',
+      url: 'https://localhost:44328',
       rootNamespace: 'Boc.Lbfl',
     },
   },

@@ -36,6 +36,14 @@ export function configureRoutes(routes: RoutesService): () => void {
                 iconClass: 'user',
                 order: 2,
             },
+            {
+                path: '/identity/organizations',
+                name: eIdentityRouteNames.OrganizationUnits,
+                parentName: eIdentityRouteNames.IdentityManagement,
+                requiredPolicy: eIdentityPolicyNames.OrgnaizationUnits,
+                iconClass: 'bank',
+                order: 3,
+            },
         ]);
     };
 }

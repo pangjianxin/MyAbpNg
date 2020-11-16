@@ -1,10 +1,13 @@
 import { PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import {
     GetIdentityUsersInput,
+    GetOrganizationUnitsInput,
     IdentityRoleCreateDto,
     IdentityRoleUpdateDto,
     IdentityUserCreateDto,
     IdentityUserUpdateDto,
+    OrganizationUnitCreateDto,
+    OrganizationUnitUpdateDto,
 } from '../proxy/identity/models';
 
 export class GetRoles {
@@ -60,4 +63,29 @@ export class UpdateUser {
 export class GetUserRoles {
     static readonly type = '[Identity] Get User Roles';
     constructor(public payload: string) { }
+}
+
+export class GetOrganizationUnits {
+    static readonly type = '[Identity] Get Organization Units';
+    constructor(public payload: PagedAndSortedResultRequestDto) { }
+}
+
+export class GetOrganizationUnitById {
+    static readonly type = '[Identity] Get Organization Unit By Id ';
+    constructor(public payload: string) { }
+}
+
+export class DeleteOrganizationUnit {
+    static readonly type = '[Identity] Delete Organization Unit';
+    constructor(public payload: string) { }
+}
+
+export class CreateOrganizationUnit {
+    static readonly type = '[Identity] Create Organization Unit';
+    constructor(public payload: OrganizationUnitCreateDto) { }
+}
+
+export class UpdateOrganizationUnit {
+    static readonly type = '[Identity] Update Organization Unit';
+    constructor(public payload: OrganizationUnitUpdateDto & { id: string }) { }
 }

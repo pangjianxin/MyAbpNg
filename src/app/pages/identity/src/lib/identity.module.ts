@@ -11,10 +11,12 @@ import { CoreModule, LazyModuleFactory } from '@abp/ng.core';
 import { RegisterUserComponent } from './components/register-user/register-user.component';
 import { CreateRoleComponent } from './components/create-role/create-role.component';
 import { EditRoleComponent } from './components/edit-role/edit-role.component';
+import { OrganizationUnitsComponent } from './components/organization-units/organization-units.component';
+import { CreateOrganizationUnitComponent } from './components/create-organization-unit/create-organization-unit.component';
 
 
 @NgModule({
-  declarations: [RolesComponent, UsersComponent, RegisterUserComponent, EditUserComponent, CreateRoleComponent, EditRoleComponent],
+  declarations: [RolesComponent, UsersComponent, RegisterUserComponent, EditUserComponent, CreateRoleComponent, EditRoleComponent, OrganizationUnitsComponent, CreateOrganizationUnitComponent],
   exports: [RolesComponent, UsersComponent],
   imports: [
     NgxsModule.forFeature([IdentityState]),
